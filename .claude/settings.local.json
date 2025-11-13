@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for f in pages/*.py)",
+      "Bash(do basename \"$f\")",
+      "Bash(done)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
