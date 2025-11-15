@@ -1,0 +1,267 @@
+{
+  "timestamp": "2025-11-14T19:57:24.086846",
+  "tests": {
+    "imports": [
+      {
+        "name": "Streamlit (Web Framework)",
+        "status": "PASS",
+        "critical": true,
+        "result": "v1.45.1"
+      },
+      {
+        "name": "Pandas (Data Analysis)",
+        "status": "PASS",
+        "critical": true,
+        "result": "v2.3.3"
+      },
+      {
+        "name": "NumPy (Numerical Computing)",
+        "status": "PASS",
+        "critical": true,
+        "result": "v2.2.6"
+      },
+      {
+        "name": "Plotly (Visualization)",
+        "status": "PASS",
+        "critical": true,
+        "result": "v5.24.1"
+      },
+      {
+        "name": "yfinance (Market Data)",
+        "status": "PASS",
+        "critical": true,
+        "result": "Available"
+      },
+      {
+        "name": "TA-Lib (Technical Analysis)",
+        "status": "PASS",
+        "critical": true,
+        "result": "vunknown"
+      },
+      {
+        "name": "utils.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Utils module loaded"
+      },
+      {
+        "name": "data_fetcher.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Data fetcher loaded"
+      },
+      {
+        "name": "analysis_engine.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Analysis engine loaded"
+      },
+      {
+        "name": "enhanced_valuation.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Enhanced valuation loaded"
+      },
+      {
+        "name": "dashboard_stocks.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Stocks dashboard loaded"
+      },
+      {
+        "name": "dashboard_selector.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Dashboard selector loaded"
+      },
+      {
+        "name": "dashboard_crypto.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Crypto dashboard loaded"
+      },
+      {
+        "name": "dashboard_advanced.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Advanced dashboard loaded"
+      },
+      {
+        "name": "dashboard_portfolio.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Portfolio dashboard loaded"
+      },
+      {
+        "name": "dashboard_options.py",
+        "status": "PASS",
+        "critical": true,
+        "result": "Options dashboard loaded"
+      },
+      {
+        "name": "Master Indicators Engine",
+        "status": "PASS",
+        "critical": false,
+        "result": "Master engine loaded with N/A indicators"
+      }
+    ],
+    "colors": [
+      {
+        "name": "All Color Constants Exist",
+        "status": "PASS",
+        "critical": true,
+        "result": "All 10 color constants defined"
+      },
+      {
+        "name": "Text Primary Color (White)",
+        "status": "PASS",
+        "critical": true,
+        "result": "White (#FFFFFF)"
+      },
+      {
+        "name": "Success Color (WCAG AA)",
+        "status": "PASS",
+        "critical": true,
+        "result": "Bright Green (#22C55E) - 7.2:1 contrast"
+      },
+      {
+        "name": "Error Color (WCAG AA)",
+        "status": "PASS",
+        "critical": true,
+        "result": "Red (#EF4444) - 4.7:1 contrast"
+      },
+      {
+        "name": "Warning Color (WCAG AA)",
+        "status": "PASS",
+        "critical": true,
+        "result": "Orange (#F59E0B) - 5.1:1 contrast"
+      },
+      {
+        "name": "Info Color (WCAG AA)",
+        "status": "PASS",
+        "critical": true,
+        "result": "Blue (#3B82F6) - 5.4:1 contrast"
+      },
+      {
+        "name": "Background Colors",
+        "status": "PASS",
+        "critical": true,
+        "result": "Dark backgrounds validated"
+      }
+    ],
+    "constants": [
+      {
+        "name": "Financial Constants",
+        "status": "PASS",
+        "critical": true,
+        "result": "All financial constants within valid ranges"
+      }
+    ],
+    "calculations": [
+      {
+        "name": "format_currency()",
+        "status": "PASS",
+        "critical": true,
+        "result": "All currency formats correct"
+      },
+      {
+        "name": "format_percentage()",
+        "status": "PASS",
+        "critical": true,
+        "result": "Percentage formatting correct"
+      },
+      {
+        "name": "format_large_number()",
+        "status": "PASS",
+        "critical": true,
+        "result": "Large number formatting correct"
+      },
+      {
+        "name": "get_color_for_value()",
+        "status": "PASS",
+        "critical": true,
+        "result": "Color logic working (pos=#22C55E, neg=#EF4444)"
+      },
+      {
+        "name": "DCF Present Value Formula",
+        "status": "PASS",
+        "critical": true,
+        "result": "PV = 90.91 (expected ~90.91)"
+      },
+      {
+        "name": "DCF Terminal Value Formula",
+        "status": "PASS",
+        "critical": true,
+        "result": "TV = $1471.43 (expected ~$1,471.43)"
+      },
+      {
+        "name": "WACC Calculation",
+        "status": "PASS",
+        "critical": true,
+        "result": "WACC = 9.58% (expected ~9.58%)"
+      },
+      {
+        "name": "RSI Calculation Logic",
+        "status": "PASS",
+        "critical": true,
+        "result": "RSI = 66.67 (range validated)"
+      }
+    ],
+    "ui_components": [
+      {
+        "name": "dashboard_stocks.py Color Updates",
+        "status": "PASS",
+        "critical": true,
+        "result": "New colors: 6, Old colors: 3"
+      },
+      {
+        "name": "dashboard_selector.py Color Updates",
+        "status": "PASS",
+        "critical": true,
+        "result": "Solid backgrounds validated"
+      },
+      {
+        "name": "constants.py Color Scheme",
+        "status": "PASS",
+        "critical": true,
+        "result": "All 7 new color constants validated"
+      }
+    ],
+    "data_sources": [
+      {
+        "name": "yfinance API",
+        "status": "PASS",
+        "critical": false,
+        "result": "yfinance working (fetched AAPL data)"
+      }
+    ],
+    "integrations": [
+      {
+        "name": "Redundant Files Removal",
+        "status": "PASS",
+        "critical": true,
+        "result": "6/6 redundant files confirmed removed"
+      },
+      {
+        "name": "Essential Documentation",
+        "status": "PASS",
+        "critical": true,
+        "result": "All 6 essential docs exist"
+      },
+      {
+        "name": "Essential Test Scripts",
+        "status": "PASS",
+        "critical": true,
+        "result": "All 4 essential scripts exist"
+      }
+    ]
+  },
+  "stats": {
+    "passed": 40,
+    "failed": 0,
+    "warnings": 0,
+    "total": 40
+  },
+  "errors": [],
+  "warnings": []
+}
