@@ -1,0 +1,323 @@
+{
+  "timestamp": "2025-11-14T19:43:33.889528",
+  "syntax_checks": [],
+  "import_checks": [
+    {
+      "test": "streamlit (Web framework)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "pandas (Data analysis)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "numpy (Numerical computing)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "plotly (Visualization)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "yfinance (Market data)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "ta (Technical analysis)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "scipy (Scientific computing)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "fredapi (Federal Reserve data) [OPTIONAL]",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "anthropic (Claude LLM) [OPTIONAL]",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "finnhub (Insider trades) [OPTIONAL]",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "praw (Reddit API) [OPTIONAL]",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "newsapi (News API) [OPTIONAL]",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "statsmodels (Statistical models) [OPTIONAL]",
+      "status": "PASS",
+      "details": ""
+    }
+  ],
+  "module_tests": [
+    {
+      "test": "utils",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "data_fetcher",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "analysis_engine",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "theme_manager",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "wsb_quotes",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "debug_tools",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "enhanced_valuation",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "enhanced_valuation_ui",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "dashboard_selector",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "dashboard_stocks",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "dashboard_options",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "dashboard_crypto",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "dashboard_advanced",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "dashboard_portfolio",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "utils.format_currency",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "utils.format_percentage",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "utils.format_large_number",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "utils.format_price",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "utils.safe_divide (normal)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "utils.safe_divide (divide by zero)",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: main.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: requirements.txt",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: README.md",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: dashboard_stocks.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: dashboard_options.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: dashboard_crypto.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: dashboard_advanced.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: dashboard_portfolio.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: data_fetcher.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: analysis_engine.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: utils.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: enhanced_valuation.py",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "File exists: enhanced_valuation_ui.py",
+      "status": "PASS",
+      "details": ""
+    }
+  ],
+  "calculation_tests": [
+    {
+      "test": "ValuationEngine instantiation",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "DCF error handling (no cash flow)",
+      "status": "PASS",
+      "details": "\u2713 Correctly errors with no cash flow data"
+    },
+    {
+      "test": "DCF calculation (AAPL)",
+      "status": "PASS",
+      "details": "\u2713 Fair value: $90.42"
+    },
+    {
+      "test": "Multiples error handling (no ratios)",
+      "status": "PASS",
+      "details": "\u2713 Correctly errors: Insufficient data for multiples valuation"
+    },
+    {
+      "test": "EnhancedDCFCalculator instantiation",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "Enhanced DCF calculation",
+      "status": "PASS",
+      "details": "Fair value: $181.67"
+    },
+    {
+      "test": "DCF value range check",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "Monte Carlo simulation",
+      "status": "PASS",
+      "details": "100 simulations, mean: $204.86"
+    },
+    {
+      "test": "Sensitivity analysis",
+      "status": "PASS",
+      "details": "4 data points"
+    }
+  ],
+  "data_fetcher_tests": [
+    {
+      "test": "MarketDataFetcher instantiation",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "Method: get_stock_data",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "Method: get_realtime_quote",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "Method: get_fundamentals",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "test": "Method: get_institutional_data",
+      "status": "PASS",
+      "details": ""
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "total_tests": 60,
+    "passed": 60,
+    "failed": 0,
+    "warnings": 0,
+    "pass_rate": "100.0%",
+    "critical_errors": 0,
+    "total_warnings": 0
+  }
+}

@@ -1,0 +1,803 @@
+{
+  "metadata": {
+    "timestamp": "2025-11-14T20:19:37.793530",
+    "python_version": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "win32",
+    "cwd": "C:\\Users\\603506\\Desktop\\Trevor_Python\\Stocksv3"
+  },
+  "sections": {
+    "SECTION 1: Python Environment & Core Dependencies": {
+      "description": "Validate Python version, core libraries, and system compatibility",
+      "tests": [
+        {
+          "name": "Python Version",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 5.4836273193359375e-06,
+          "result": "Python 3.13.5",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Streamlit Framework",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.8006598949432373,
+          "result": "v1.45.1",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Pandas Data Analysis",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.6028642654418945,
+          "result": "v2.3.3",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "NumPy Numerical Computing",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.814697265625e-06,
+          "result": "v2.2.6",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Plotly Visualization",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0033903121948242188,
+          "result": "v5.24.1",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "yfinance Market Data",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.5641133785247803,
+          "result": "API accessible",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "TA-Lib Technical Analysis",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.016231775283813477,
+          "result": "vavailable",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Requests HTTP Library",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.38393354415893555,
+          "result": "v2.32.3",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "psutil System Monitor",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.01131582260131836,
+          "result": "v5.9.0",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 9,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 2: Project Structure & File Integrity": {
+      "description": "Verify all critical files exist and are accessible",
+      "tests": [
+        {
+          "name": "Root Files Exist",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.00042557716369628906,
+          "result": "All 7 root files present",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Dashboard Files Exist",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.00016117095947265625,
+          "result": "All 6 dashboards present",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Source Directory Structure",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 9.655952453613281e-05,
+          "result": "All 5 directories present",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Data Directories",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.00033473968505859375,
+          "result": "Created/verified 3 data directories",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "File System Permissions",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0011258125305175781,
+          "result": "Read/write permissions OK",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 5,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 3: Module Imports & Circular Dependency Check": {
+      "description": "Import all project modules and detect circular dependencies",
+      "tests": [
+        {
+          "name": "utils.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0016927719116210938,
+          "result": "Utils module + key functions OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "data_fetcher.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.015967130661010742,
+          "result": "Data fetcher module OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "analysis_engine.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.7583529949188232,
+          "result": "Analysis engine module OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "enhanced_valuation.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0010540485382080078,
+          "result": "Enhanced valuation module OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "dashboard_stocks.py Import",
+          "status": "SLOW",
+          "critical": true,
+          "execution_time": 2.351149797439575,
+          "result": "Stocks dashboard OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "dashboard_selector.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0013475418090820312,
+          "result": "Dashboard selector OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "dashboard_crypto.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0026121139526367188,
+          "result": "Crypto dashboard OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "dashboard_advanced.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.004758119583129883,
+          "result": "Advanced dashboard OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "dashboard_portfolio.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0026798248291015625,
+          "result": "Portfolio dashboard OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "dashboard_options.py Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.00275421142578125,
+          "result": "Options dashboard OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "src.core.constants Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 8.58306884765625e-06,
+          "result": "Core constants OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "src.ui_utils.formatters Import",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 4.5299530029296875e-06,
+          "result": "UI utils formatters OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Circular Dependency Check",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.00980997085571289,
+          "result": "No circular dependencies detected",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 13,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 4: Color Scheme & WCAG AA Accessibility Compliance": {
+      "description": "Validate new high-contrast color scheme meets accessibility standards",
+      "tests": [
+        {
+          "name": "All Color Constants Defined",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 6.4373016357421875e-06,
+          "result": "All 14 color constants defined",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Text Color Values",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 2.6226043701171875e-06,
+          "result": "White, Light Gray, Medium Gray",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Semantic Color Values",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.5762786865234375e-06,
+          "result": "All semantic colors WCAG AA compliant",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Background Color Values",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 2.384185791015625e-06,
+          "result": "Dark mode backgrounds validated",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Chart Color Values",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 1.430511474609375e-06,
+          "result": "Chart colors validated",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "WCAG AA Contrast Ratios",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 5.602836608886719e-05,
+          "result": "Primary: 17.4:1, Success: 7.6:1 (WCAG AA\u2713)",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 6,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 5: Utility Functions & Data Formatters": {
+      "description": "Test all formatting, validation, and helper functions",
+      "tests": [
+        {
+          "name": "format_currency()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.314018249511719e-05,
+          "result": "Currency formatting OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "format_percentage()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 1.2874603271484375e-05,
+          "result": "Percentage formatting OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "format_large_number()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 1.3589859008789062e-05,
+          "result": "Large number formatting OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "safe_get()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 8.58306884765625e-06,
+          "result": "safe_get OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "safe_divide()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 8.344650268554688e-06,
+          "result": "safe_divide OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "sanitize_dict_for_cache()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 6.937980651855469e-05,
+          "result": "sanitize_dict_for_cache OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "validate_ticker()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 1.5020370483398438e-05,
+          "result": "validate_ticker OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "get_color_for_value()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 1.1682510375976562e-05,
+          "result": "get_color_for_value OK",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 8,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 6: Financial Constants & Calculation Validation": {
+      "description": "Verify all financial constants and calculation formulas",
+      "tests": [
+        {
+          "name": "Financial Constants",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 1.1920928955078125e-05,
+          "result": "RFR=0.04, MRP=0.08, WACC=0.1",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Technical Analysis Constants",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.0994415283203125e-06,
+          "result": "RSI: 30/70, MACD Signal: 9",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "DCF Present Value Formula",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 4.5299530029296875e-06,
+          "result": "PV calculation accurate: $90.91",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "DCF Terminal Value Formula",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 5.245208740234375e-06,
+          "result": "Terminal value: $1366.67",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "WACC Calculation",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.814697265625e-06,
+          "result": "WACC: 9.58%",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "RSI Calculation Logic",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 7.152557373046875e-06,
+          "result": "RSI calculation OK: 72.7",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 6,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 7: Data Sources & API Connectivity": {
+      "description": "Test connectivity to external data sources and APIs",
+      "tests": [
+        {
+          "name": "yfinance Stock History",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.10128092765808105,
+          "result": "Retrieved 5 days of AAPL data",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "yfinance Stock Info",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.09681081771850586,
+          "result": "Retrieved 182 info fields",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "yfinance Financials",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.14668941497802734,
+          "result": "Financials available: (39, 5)",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Data Fetcher Integration",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 2.86102294921875e-06,
+          "result": "Data fetcher module accessible",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Cache System",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.291949987411499,
+          "result": "Streamlit cache system OK",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 5,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 8: Technical Indicators & Analysis Engine": {
+      "description": "Validate technical analysis calculations and indicator engine",
+      "tests": [
+        {
+          "name": "Master Indicators Engine",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.5762786865234375e-06,
+          "result": "Master indicators engine accessible",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Tier 1 Core Indicators",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 8.821487426757812e-06,
+          "result": "Tier 1 core indicators OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Tier 2 Pro Indicators",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 5.0067901611328125e-06,
+          "result": "Tier 2 pro indicators OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Tier 3 Volume Indicators",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 5.9604644775390625e-06,
+          "result": "Tier 3 volume indicators OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Moving Average Calculation",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0006966590881347656,
+          "result": "SMA calculation accurate: 18.00",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Bollinger Bands",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.0006856918334960938,
+          "result": "Bollinger bands calculation OK",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 6,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 9: Dashboard Components & UI Elements": {
+      "description": "Verify all dashboard components and UI functions work correctly",
+      "tests": [
+        {
+          "name": "Stocks Dashboard show()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 5.0067901611328125e-06,
+          "result": "Stocks dashboard show_stocks_dashboard() OK",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Crypto Dashboard show()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.5762786865234375e-06,
+          "result": "Crypto dashboard accessible",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Advanced Dashboard show()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.0994415283203125e-06,
+          "result": "Advanced dashboard accessible",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Portfolio Dashboard show()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 8.344650268554688e-06,
+          "result": "Portfolio dashboard accessible",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Options Dashboard show()",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 2.6226043701171875e-06,
+          "result": "Options dashboard accessible",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Color Usage in Dashboards",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.001947164535522461,
+          "result": "New colors used 15 times across dashboards",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 6,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 10: File Consolidation & Cleanup Verification": {
+      "description": "Verify redundant files removed and essential files preserved",
+      "tests": [
+        {
+          "name": "Redundant Files Removed",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 8.821487426757812e-05,
+          "result": "All 5 redundant files removed",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Essential Documentation Present",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 0.00012421607971191406,
+          "result": "All 4 essential docs present",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Test Files Organized",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.0001513957977294922,
+          "result": "3/3 test files present",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Directory Cleanliness",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.001322031021118164,
+          "result": "Root: 28 .py files, 19 .md files",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 4,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 11: Performance Metrics & Memory Analysis": {
+      "description": "Check system performance and memory usage",
+      "tests": [
+        {
+          "name": "Memory Usage",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.00016999244689941406,
+          "result": "Memory: 238.9 MB (OK)",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Import Speed",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 9.059906005859375e-06,
+          "result": "Pandas import: 0.000s",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Garbage Collection",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.0751638412475586,
+          "result": "GC working: 215512 \u2192 214106 objects",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Thread Safety",
+          "status": "PASS",
+          "critical": false,
+          "execution_time": 0.0023789405822753906,
+          "result": "Thread safety OK",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 4,
+      "failed": 0,
+      "warnings": 0
+    },
+    "SECTION 12: Configuration Files & Environment Variables": {
+      "description": "Validate all configuration files and settings",
+      "tests": [
+        {
+          "name": "Constants File",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 8.106231689453125e-06,
+          "result": "Analysis Master v3.0.0",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Cache Constants",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 7.152557373046875e-06,
+          "result": "Cache TTLs: 60s, 300s, 3600s",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Performance Modes",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 4.5299530029296875e-06,
+          "result": "3 modes: fast, balanced, deep (default: balanced)",
+          "error": null,
+          "fixed": false
+        },
+        {
+          "name": "Error Messages",
+          "status": "PASS",
+          "critical": true,
+          "execution_time": 3.5762786865234375e-06,
+          "result": "All error messages defined",
+          "error": null,
+          "fixed": false
+        }
+      ],
+      "passed": 4,
+      "failed": 0,
+      "warnings": 0
+    }
+  },
+  "stats": {
+    "passed": 76,
+    "failed": 0,
+    "warnings": 0,
+    "auto_fixed": 0,
+    "total": 76
+  },
+  "errors": [],
+  "warnings": [
+    "dashboard_stocks.py Import: Slow execution (2.35s, expected <1.0s)"
+  ],
+  "fixes_applied": [],
+  "performance_metrics": {}
+}

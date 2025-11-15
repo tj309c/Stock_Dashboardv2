@@ -1,0 +1,85 @@
+2025-11-14 07:19:03.855 
+Warning: the config option 'server.enableCORS=false' is not compatible with
+'server.enableXsrfProtection=true'.
+As a result, 'server.enableCORS' is being overridden to 'true'.
+
+More information:
+In order to protect against CSRF attacks, we send a cookie with each request.
+To do so, we must specify allowable origins, which places a restriction on
+cross-origin resource sharing.
+
+If cross origin resource sharing is required, please disable server.enableXsrfProtection.
+            
+
+  You can now view your Streamlit app in your browser.
+
+  Local URL: http://localhost:8501
+  Network URL: http://10.0.1.123:8501
+  External URL: http://172.203.190.66:8501
+
+/home/codespace/.local/lib/python3.12/site-packages/yfinance/scrapers/fundamentals.py:36: DeprecationWarning: 'Ticker.earnings' is deprecated as not available via API. Look for "Net Income" in Ticker.income_stmt.
+  warnings.warn("'Ticker.earnings' is deprecated as not available via API. Look for \"Net Income\" in Ticker.income_stmt.", DeprecationWarning)
+/workspaces/-Stocksv2/dashboard_stocks.py:126: FutureWarning: In a future version of pandas, parsing datetimes with mixed time zones will raise an error unless `utc=True`. Please specify `utc=True` to opt in to the new behaviour and silence this warning. To create a `Series` with mixed offsets and `object` dtype, please use `apply` and `datetime.datetime.strptime`
+  df.index = pd.to_datetime(df.index) if not isinstance(df.index, pd.DatetimeIndex) else df.index
+2025-11-14 07:19:15,487 - src.config.settings - INFO - Application started in production mode
+2025-11-14 07:19:23.915 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-11-14 07:19:23.931 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-11-14 07:19:23.960 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-11-14 07:20:21.850 Uncaught app execution
+Traceback (most recent call last):
+  File "/home/codespace/.local/lib/python3.12/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 129, in exec_func_with_error_handling
+    result = func()
+             ^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 669, in code_to_exec
+    exec(code, module.__dict__)  # noqa: S102
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/-Stocksv2/main.py", line 97, in <module>
+    show_advanced_dashboard(components, ticker=st.session_state.get("advanced_ticker", "SPY"))
+  File "/workspaces/-Stocksv2/dashboard_advanced.py", line 68, in show_advanced_dashboard
+    show_backtesting_tab(data, components)
+  File "/workspaces/-Stocksv2/dashboard_advanced.py", line 114, in show_backtesting_tab
+    if df is None or df.empty:
+                     ^^^^^^^^
+AttributeError: 'dict' object has no attribute 'empty'
+2025-11-14 07:29:01.585 
+Warning: the config option 'server.enableCORS=false' is not compatible with
+'server.enableXsrfProtection=true'.
+As a result, 'server.enableCORS' is being overridden to 'true'.
+
+More information:
+In order to protect against CSRF attacks, we send a cookie with each request.
+To do so, we must specify allowable origins, which places a restriction on
+cross-origin resource sharing.
+
+If cross origin resource sharing is required, please disable server.enableXsrfProtection.
+            
+
+=== Starting scrape for $META ===
+
+Scraping Reddit for $META...
+Found 0 Reddit posts
+Scraping Yahoo Finance for $META...
+Found 20 Yahoo Finance articles
+
+=== Scrape complete ===
+Total items collected: 20
+
+Sentiment breakdown:
+sentiment
+positive    9
+neutral     9
+negative    2
+Name: count, dtype: int64
+  Stopping...

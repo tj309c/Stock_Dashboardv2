@@ -1,0 +1,759 @@
+2025-11-14 05:31:52,413 - src.config.settings - INFO - Application started in production mode
+2025-11-14 05:31:52,419 - app - INFO - Test log message
+2025-11-14 05:32:56,028 - src.config.settings - INFO - Application started in production mode
+2025-11-14 05:34:35,812 - src.config.settings - INFO - Application started in production mode
+2025-11-14 05:34:36,660 - app - INFO - Test message
+2025-11-14 05:34:36,661 - performance - INFO - test_op: 0.000s
+2025-11-14 05:34:57,285 - src.config.settings - INFO - Application started in production mode
+2025-11-14 05:34:58,134 - app - INFO - Test message
+2025-11-14 05:34:58,135 - performance - INFO - test_op: 0.000s
+2025-11-14 05:35:30,276 - src.config.settings - INFO - Application started in production mode
+2025-11-14 05:35:30,278 - app - INFO - Test message
+2025-11-14 05:35:30,278 - performance - INFO - test_op: 0.000s
+2025-11-14 07:17:43,173 - src.config.settings - INFO - Application started in production mode
+2025-11-14 07:19:15,487 - src.config.settings - INFO - Application started in production mode
+2025-11-14 07:28:08,640 - src.config.settings - INFO - Application started in production mode
+2025-11-14 07:29:20,341 - src.config.settings - INFO - Application started in production mode
+2025-11-14 07:29:27,950 - src.config.settings - INFO - Application started in production mode
+2025-11-14 07:29:57,180 - src.config.settings - INFO - Application started in production mode
+2025-11-14 07:29:59,726 - src.config.settings - INFO - Application started in production mode
+2025-11-14 07:31:12,812 - src.config.settings - INFO - Application started in production mode
+2025-11-14 13:48:13,658 - src.config.settings - INFO - Application started in production mode
+2025-11-14 13:48:53,939 - src.config.settings - INFO - Application started in production mode
+2025-11-14 14:59:54,245 - data_fetcher - ERROR - Error fetching StockTwits sentiment: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-11-14 14:59:55,195 - src.config.settings - INFO - Application started in production mode
+2025-11-14 15:00:03,703 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 15:00:04,075 - src.pipelines.get_political_data - WARNING - Senate Stock Tracker API unavailable: 403 Client Error: Forbidden for url: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
+2025-11-14 15:00:04,225 - src.pipelines.get_political_data - INFO - Fetched 9 Congressional trades from QuiverQuant API
+2025-11-14 15:00:04,233 - src.utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "/workspaces/-Stocksv2/src/utils/congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+  File "/home/codespace/.local/lib/python3.12/site-packages/streamlit/runtime/metrics_util.py", line 447, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/streamlit/elements/arrow.py", line 722, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/streamlit/dataframe_util.py", line 829, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pyarrow/table.pxi", line 4795, in pyarrow.lib.Table.from_pandas
+  File "/home/codespace/.local/lib/python3.12/site-packages/pyarrow/pandas_compat.py", line 594, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/pyarrow/pandas_compat.py", line 374, in _get_columns_to_convert
+    raise ValueError(
+ValueError: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 19:01:07,849 - src.config.settings - INFO - Application started in production mode
+2025-11-14 19:01:16,277 - src.config.settings - INFO - Application started in production mode
+2025-11-14 19:01:31,008 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 19:01:33,417 - src.config.settings - INFO - Application started in production mode
+2025-11-14 19:01:33,469 - src.config.settings - INFO - Application started in production mode
+2025-11-14 19:02:34,547 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 19:02:36,697 - src.config.settings - INFO - Application started in production mode
+2025-11-14 19:02:36,751 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:47:01,406 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:47:01,419 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:47:12,067 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:47:12,082 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:47:53,058 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:47:53,073 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:57:08,256 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 16:57:08,257 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 16:57:08,259 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 16:57:08,259 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 16:57:08,261 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 16:57:08,262 - src.pipelines.get_market_data - INFO - Alpha Vantage API initialized
+2025-11-14 16:57:08,515 - src.analysis.predictive_models - INFO - Claude API initialized successfully
+2025-11-14 16:57:08,524 - src.analysis.arbitrage_engine - INFO - Initialized binance exchange
+2025-11-14 16:57:08,527 - src.analysis.arbitrage_engine - INFO - Initialized coinbase exchange
+2025-11-14 16:57:08,533 - src.analysis.arbitrage_engine - INFO - Initialized kraken exchange
+2025-11-14 16:57:08,539 - src.analysis.arbitrage_engine - INFO - Initialized bybit exchange
+2025-11-14 16:57:08,544 - src.analysis.arbitrage_engine - INFO - Initialized okx exchange
+2025-11-14 16:57:08,616 - src.pipelines.get_market_data - INFO - Alpha Vantage API initialized
+2025-11-14 16:57:30,653 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 16:57:30,653 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 16:57:50,247 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 16:57:50,248 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 16:57:50,255 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 16:57:50,256 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 16:57:50,258 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 16:57:50,260 - src.pipelines.get_market_data - INFO - Alpha Vantage API initialized
+2025-11-14 16:57:50,728 - src.analysis.predictive_models - INFO - Claude API initialized successfully
+2025-11-14 16:57:50,751 - src.analysis.arbitrage_engine - INFO - Initialized binance exchange
+2025-11-14 16:57:50,756 - src.analysis.arbitrage_engine - INFO - Initialized coinbase exchange
+2025-11-14 16:57:50,760 - src.analysis.arbitrage_engine - INFO - Initialized kraken exchange
+2025-11-14 16:57:50,769 - src.analysis.arbitrage_engine - INFO - Initialized bybit exchange
+2025-11-14 16:57:50,780 - src.analysis.arbitrage_engine - INFO - Initialized okx exchange
+2025-11-14 16:57:50,871 - src.pipelines.get_market_data - INFO - Alpha Vantage API initialized
+2025-11-14 16:57:54,567 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 16:57:54,567 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 16:57:57,371 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 16:58:00,044 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:58:00,060 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:58:00,086 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 16:58:00,389 - src.pipelines.get_political_data - WARNING - Senate Stock Tracker API unavailable: 403 Client Error: Forbidden for url: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
+2025-11-14 16:58:00,521 - src.pipelines.get_political_data - INFO - Fetched 9 Congressional trades from QuiverQuant API
+2025-11-14 16:58:00,539 - src.utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 16:58:13,188 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 16:58:15,876 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:58:15,885 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:58:15,901 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 16:58:15,910 - src.utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 16:59:37,331 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 16:59:39,927 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:59:41,653 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 16:59:44,051 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:59:44,057 - src.config.settings - INFO - Application started in production mode
+2025-11-14 16:59:44,069 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 16:59:44,074 - src.utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 17:00:20,755 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 17:00:23,524 - src.config.settings - INFO - Application started in production mode
+2025-11-14 17:00:23,539 - src.config.settings - INFO - Application started in production mode
+2025-11-14 17:00:23,562 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 17:00:23,570 - src.utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 17:02:21,640 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 17:02:21,640 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 17:02:23,308 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 17:02:26,046 - src.config.settings - INFO - Application started in production mode
+2025-11-14 17:02:30,965 - src.config.settings - INFO - Application started in production mode
+2025-11-14 17:02:31,302 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 17:02:31,308 - src.utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 17:03:23,486 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 17:03:23,486 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 17:03:23,489 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 17:03:23,490 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 17:03:23,493 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 17:03:23,495 - src.pipelines.get_market_data - INFO - Alpha Vantage API initialized
+2025-11-14 17:03:23,991 - src.analysis.predictive_models - INFO - Claude API initialized successfully
+2025-11-14 17:03:24,013 - src.analysis.arbitrage_engine - INFO - Initialized binance exchange
+2025-11-14 17:03:24,024 - src.analysis.arbitrage_engine - INFO - Initialized coinbase exchange
+2025-11-14 17:03:24,029 - src.analysis.arbitrage_engine - INFO - Initialized kraken exchange
+2025-11-14 17:03:24,045 - src.analysis.arbitrage_engine - INFO - Initialized bybit exchange
+2025-11-14 17:03:24,061 - src.analysis.arbitrage_engine - INFO - Initialized okx exchange
+2025-11-14 17:03:24,112 - src.pipelines.get_market_data - INFO - Alpha Vantage API initialized
+2025-11-14 17:06:25,967 - data_fetcher - ERROR - Error fetching stock data for SPY: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:06:31,025 - data_fetcher - ERROR - Error fetching stock data for META: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:11,109 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 17:07:11,110 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 17:07:11,119 - data_fetcher - ERROR - Error fetching stock data for META: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:11,123 - data_fetcher - ERROR - Error fetching quote for META: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:11,133 - data_fetcher - ERROR - Error fetching options for META: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:11,135 - data_fetcher - ERROR - Error fetching StockTwits sentiment: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:11,136 - data_fetcher - ERROR - Error fetching news: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:12,379 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 17:07:15,887 - data_fetcher - ERROR - Error fetching StockTwits sentiment: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:15,887 - data_fetcher - ERROR - Error fetching news: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:17,067 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 17:07:19,991 - src.config.settings - INFO - Application started in production mode
+2025-11-14 17:07:20,097 - src.config.settings - INFO - Application started in production mode
+2025-11-14 17:07:20,438 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 17:07:20,448 - src.utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 17:07:21,796 - data_fetcher - ERROR - Error fetching StockTwits sentiment: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:21,796 - data_fetcher - ERROR - Error fetching news: st.session_state has no attribute "api_usage". Did you forget to initialize it? More info: https://docs.streamlit.io/develop/concepts/architecture/session-state#initialization
+2025-11-14 17:07:22,983 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 17:07:25,700 - src.config.settings - INFO - Application started in production mode
+2025-11-14 17:07:25,798 - src.config.settings - INFO - Application started in production mode
+2025-11-14 17:07:25,966 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 17:07:25,975 - src.utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['Congress Member', 'BioGuideID', 'Disclosed', 'TransactionDate', 'ticker', 'Amount', 'House', 'Amount', 'Party', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 20:21:24,223 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:17:52,421 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:18:06,091 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:20:01,582 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:20:02,252 - src.config.performance_config - INFO - Performance mode changed to: Deep Mode
+2025-11-14 21:20:05,023 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:20:06,950 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:20:14,556 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:20:14,902 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 21:20:15,240 - src.pipelines.get_political_data - WARNING - Senate Stock Tracker API unavailable: 403 Client Error: Forbidden for url: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
+2025-11-14 21:20:15,384 - src.pipelines.get_political_data - ERROR - QuiverQuant API unavailable: 401 Client Error: Unauthorized for url: https://api.quiverquant.com/beta/live/congresstrading
+2025-11-14 21:20:15,385 - src.pipelines.get_political_data - INFO - Using sample Congressional trading data (APIs unavailable)
+2025-11-14 21:21:01,796 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:21:03,691 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:21:03,737 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:21:03,981 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 21:21:26,519 - src.config.performance_config - INFO - Initialized performance mode: Fast Mode
+2025-11-14 21:21:32,671 - src.config.performance_config - INFO - Initialized performance mode: Fast Mode
+2025-11-14 21:23:20,825 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 21:23:20,825 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 21:23:22,353 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:23:24,222 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:23:24,271 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:23:24,509 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 21:23:44,562 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 21:23:44,562 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 21:23:45,842 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:23:47,876 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:23:47,926 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:23:48,168 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 21:27:03,506 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 21:27:03,506 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 21:27:08,528 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:27:10,555 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:27:10,603 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:27:16,506 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:27:18,454 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:27:18,501 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:27:24,109 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:27:25,677 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:27:27,508 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:27:27,554 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:28:52,918 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:28:54,865 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:28:54,917 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:43:30,185 - src.config.performance_config - INFO - Initialized performance mode: Full Analysis Mode
+2025-11-14 21:43:34,108 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 21:43:34,108 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 21:43:37,052 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:43:38,974 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:43:39,023 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:43:39,259 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 21:45:54,306 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 21:45:54,306 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 21:46:08,440 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:46:10,434 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:46:10,482 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:46:10,704 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 21:46:38,682 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:46:41,439 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:46:41,496 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:46:41,738 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 21:48:51,618 - src.config.performance_config - INFO - Initialized performance mode: Full Analysis Mode
+2025-11-14 21:48:55,081 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 21:48:55,081 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 21:48:57,706 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:48:59,707 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:48:59,768 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:48:59,985 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 21:49:30,216 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 21:49:32,297 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:49:32,342 - src.config.settings - INFO - Application started in production mode
+2025-11-14 21:49:32,619 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:13:36,361 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 22:13:36,361 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 22:13:39,043 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:13:41,016 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:13:41,059 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:13:41,275 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:15:53,709 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 22:15:53,710 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 22:15:55,594 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:15:57,384 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:15:57,430 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:15:57,700 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:16:58,314 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:17:00,221 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:17:00,269 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:17:00,485 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:20:17,583 - src.config.performance_config - INFO - Initialized performance mode: Full Analysis Mode
+2025-11-14 22:20:19,735 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 22:20:19,735 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 22:20:22,694 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:20:24,655 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:20:38,120 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:20:38,369 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:20:38,677 - src.pipelines.get_political_data - WARNING - Senate Stock Tracker API unavailable: 403 Client Error: Forbidden for url: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
+2025-11-14 22:20:38,792 - src.pipelines.get_political_data - ERROR - QuiverQuant API unavailable: 401 Client Error: Unauthorized for url: https://api.quiverquant.com/beta/live/congresstrading
+2025-11-14 22:20:38,793 - src.pipelines.get_political_data - INFO - Using sample Congressional trading data (APIs unavailable)
+2025-11-14 22:20:47,053 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:20:49,016 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:20:49,070 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:20:49,284 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:24:23,987 - src.config.performance_config - INFO - Initialized performance mode: Full Analysis Mode
+2025-11-14 22:24:27,284 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 22:24:27,284 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 22:24:29,309 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:24:31,200 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:24:31,248 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:24:31,500 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:26:46,509 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:26:48,384 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:26:48,431 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:26:48,665 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:28:20,923 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 22:28:20,923 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 22:28:23,097 - indicators.master_engine - ERROR - Error calculating indicators: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:28:25,138 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:28:25,186 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:28:25,429 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:29:14,656 - src.config.performance_config - INFO - Initialized performance mode: Full Analysis Mode
+2025-11-14 22:29:17,975 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 22:29:17,976 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 22:29:19,913 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:29:21,862 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:29:21,916 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:29:22,154 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:29:27,926 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:29:29,933 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:29:29,978 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:29:30,197 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:34:29,712 - src.config.performance_config - INFO - Initialized performance mode: Full Analysis Mode
+2025-11-14 22:34:33,512 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 22:34:33,512 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 22:34:36,209 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:34:38,297 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:34:38,346 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:34:38,634 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:34:46,970 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:34:48,912 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:34:48,959 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:34:49,185 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:36:36,226 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 22:36:36,227 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 22:36:38,132 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:36:39,910 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:36:39,960 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:36:40,206 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:37:07,854 - src.config.performance_config - INFO - Initialized performance mode: Full Analysis Mode
+2025-11-14 22:37:12,181 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:37:14,268 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:37:14,324 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:37:14,580 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:37:21,661 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:37:23,681 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:37:23,734 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:37:23,925 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:47:39,321 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:47:52,931 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:47:53,237 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:47:53,530 - src.pipelines.get_political_data - WARNING - Senate Stock Tracker API unavailable: 403 Client Error: Forbidden for url: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
+2025-11-14 22:47:53,852 - src.pipelines.get_political_data - INFO - Fetched 9 Congressional trades from QuiverQuant API
+2025-11-14 22:47:53,858 - src.ui_utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\ui_utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 22:48:02,818 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 22:48:04,585 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:48:04,651 - src.config.settings - INFO - Application started in production mode
+2025-11-14 22:48:04,872 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 22:48:04,877 - src.ui_utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\ui_utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+2025-11-14 23:01:18,869 - src.config.settings - INFO - Application started in production mode
+2025-11-14 23:01:32,630 - src.config.settings - INFO - Application started in production mode
+2025-11-14 23:01:32,987 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 23:01:33,291 - src.pipelines.get_political_data - WARNING - Senate Stock Tracker API unavailable: 403 Client Error: Forbidden for url: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
+2025-11-14 23:01:33,434 - src.pipelines.get_political_data - ERROR - QuiverQuant API unavailable: 401 Client Error: Unauthorized for url: https://api.quiverquant.com/beta/live/congresstrading
+2025-11-14 23:01:33,434 - src.pipelines.get_political_data - INFO - Using sample Congressional trading data (APIs unavailable)
+2025-11-14 23:02:02,070 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 23:02:02,234 - src.config.settings - INFO - Application started in production mode
+2025-11-14 23:02:02,336 - src.config.settings - INFO - Application started in production mode
+2025-11-14 23:02:02,626 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 23:04:18,692 - src.config.performance_config - INFO - Initialized performance mode: Full Analysis Mode
+2025-11-14 23:08:22,510 - src.pipelines.get_economic_data - INFO - FRED API initialized successfully
+2025-11-14 23:08:22,511 - src.pipelines.get_economic_data - INFO - EIA API initialized successfully
+2025-11-14 23:08:25,645 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 23:08:25,845 - src.config.settings - INFO - Application started in production mode
+2025-11-14 23:08:25,951 - src.config.settings - INFO - Application started in production mode
+2025-11-14 23:08:26,263 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-14 23:08:32,389 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-14 23:08:32,522 - src.config.settings - INFO - Application started in production mode
+2025-11-14 23:08:32,602 - src.config.settings - INFO - Application started in production mode
+2025-11-14 23:08:32,858 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-15 00:30:04,577 - src.config.settings - INFO - Application started in production mode
+2025-11-15 00:30:04,590 - src.config.settings - INFO - Application started in production mode
+2025-11-15 00:30:04,676 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-15 00:30:04,970 - src.pipelines.get_political_data - WARNING - Senate Stock Tracker API unavailable: 403 Client Error: Forbidden for url: https://senate-stock-watcher-data.s3-us-west-2.amazonaws.com/aggregate/all_transactions.json
+2025-11-15 00:30:05,097 - src.pipelines.get_political_data - INFO - Fetched 9 Congressional trades from QuiverQuant API
+2025-11-15 00:30:05,109 - src.ui_utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\ui_utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+2025-11-15 00:30:09,881 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-15 00:30:09,994 - src.config.settings - INFO - Application started in production mode
+2025-11-15 00:30:10,006 - src.config.settings - INFO - Application started in production mode
+2025-11-15 00:30:10,019 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-15 00:30:10,027 - src.ui_utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\ui_utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+2025-11-15 00:30:18,019 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-15 00:30:18,124 - src.config.settings - INFO - Application started in production mode
+2025-11-15 00:30:18,133 - src.config.settings - INFO - Application started in production mode
+2025-11-15 00:30:18,150 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-15 00:30:18,156 - src.ui_utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\ui_utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+2025-11-15 00:30:26,153 - indicators.master_engine - WARNING - Array comparison issue in indicators (non-critical): The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+2025-11-15 00:30:26,253 - src.config.settings - INFO - Application started in production mode
+2025-11-15 00:30:26,265 - src.config.settings - INFO - Application started in production mode
+2025-11-15 00:30:26,275 - src.pipelines.get_political_data - INFO - Finnhub API initialized successfully
+2025-11-15 00:30:26,283 - src.ui_utils.congressional_display - ERROR - Error in show_congressional_trades: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
+Traceback (most recent call last):
+  File "C:\Users\603506\Desktop\Trevor_Python\Stocksv3\src\ui_utils\congressional_display.py", line 135, in show_congressional_trades
+    st.dataframe(
+    ~~~~~~~~~~~~^
+        trades_df,
+        ^^^^^^^^^^
+        use_container_width=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+        hide_index=True
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\runtime\metrics_util.py", line 444, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\elements\arrow.py", line 607, in dataframe
+    proto.data = dataframe_util.convert_pandas_df_to_arrow_bytes(data_df)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\streamlit\dataframe_util.py", line 822, in convert_pandas_df_to_arrow_bytes
+    table = pa.Table.from_pandas(df)
+  File "pyarrow\\table.pxi", line 4751, in pyarrow.lib.Table.from_pandas
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 595, in dataframe_to_arrays
+    convert_fields) = _get_columns_to_convert(df, schema, preserve_index,
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                              columns)
+                                              ^^^^^^^^
+  File "C:\Users\603506\Desktop\Trevor_Python\Anaconda\Lib\site-packages\pyarrow\pandas_compat.py", line 375, in _get_columns_to_convert
+    raise ValueError(
+        'Duplicate column names found: {}'.format(list(df.columns))
+    )
+ValueError: Duplicate column names found: ['BioGuideID', 'TransactionDate', 'House', 'Amount', 'last_modified', 'TickerType', 'Description', 'ExcessReturn', 'PriceChange', 'SPYChange', 'Congress Member', 'ticker', 'Amount', 'Disclosed', 'Party', 'Chamber', 'estimated_value', 'Type']
