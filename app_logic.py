@@ -4,6 +4,15 @@ import streamlit as st
 from typing import List, Dict, Any, Tuple, Optional
 from app_context import AppContext # Import the central AppContext
 
+# Optional import for technical indicators
+try:
+    from ta.trend import SMAIndicator, MACD, ADXIndicator
+    from ta.momentum import RSIIndicator
+    from ta.volatility import BollingerBands
+    TA_AVAILABLE = True
+except ImportError:
+    TA_AVAILABLE = False
+
 # --- Helper functions ---
 def get_technical_signals(price_data: pd.DataFrame) -> Tuple[List[str], List[str]]:
     """
@@ -99,15 +108,94 @@ class Stock:
             return pd.DataFrame()  # Return empty DataFrame on error
 
 
-@st.cache_data(ttl=900, show_spinner="Fetching stock data...") # Cache for 15 minutes
-def _fetch_stock_data(stock_object: Stock, light_load: bool) -> Dict[str, Any]:
+def _add_technical_indicators(price_data: pd.DataFrame) -> pd.DataFrame:
+    """
+    Adds technical indicators to price data using the ta library.
+    Falls back to basic indicators if ta is not available.
+    """
+    if price_data.empty:
+        return price_data
+
+    df = price_data.copy()
+
+    if TA_AVAILABLE:
+        # Add all technical indicators using the ta library
+        # RSI
+        rsi = RSIIndicator(close=df['Close'], window=14)
+        df['RSI_14'] = rsi.rsi()
+
+        # MACD
+        macd = MACD(close=df['Close'], window_slow=26, window_fast=12, window_sign=9)
+        df['MACD_12_26_9'] = macd.macd()
+        df['MACDs_12_26_9'] = macd.macd_signal()
+        df['MACDh_12_26_9'] = macd.macd_diff()
+
+        # Simple Moving Averages
+        sma50 = SMAIndicator(close=df['Close'], window=50)
+        df['SMA50'] = sma50.sma_indicator()
+        sma200 = SMAIndicator(close=df['Close'], window=200)
+        df['SMA200'] = sma200.sma_indicator()
+
+        # Bollinger Bands
+        bb = BollingerBands(close=df['Close'], window=20, window_dev=2)
+        df['BBU_20_2.0_2.0'] = bb.bollinger_hband()
+        df['BBL_20_2.0_2.0'] = bb.bollinger_lband()
+        df['BBM_20_2.0_2.0'] = bb.bollinger_mavg()
+
+        # ADX
+        adx = ADXIndicator(high=df['High'], low=df['Low'], close=df['Close'], window=14)
+        df['ADX_14'] = adx.adx()
+        df['DMP_14'] = adx.adx_pos()
+        df['DMN_14'] = adx.adx_neg()
+    else:
+        # Fallback: Calculate basic indicators manually
+        # RSI
+        delta = df['Close'].diff()
+        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+        rs = gain / loss
+        df['RSI_14'] = 100 - (100 / (1 + rs))
+
+        # Simple Moving Averages
+        df['SMA50'] = df['Close'].rolling(window=50).mean()
+        df['SMA200'] = df['Close'].rolling(window=200).mean()
+
+        # Basic MACD
+        exp1 = df['Close'].ewm(span=12, adjust=False).mean()
+        exp2 = df['Close'].ewm(span=26, adjust=False).mean()
+        df['MACD_12_26_9'] = exp1 - exp2
+        df['MACDs_12_26_9'] = df['MACD_12_26_9'].ewm(span=9, adjust=False).mean()
+        df['MACDh_12_26_9'] = df['MACD_12_26_9'] - df['MACDs_12_26_9']
+
+        # Bollinger Bands
+        df['BBM_20_2.0_2.0'] = df['Close'].rolling(window=20).mean()
+        std = df['Close'].rolling(window=20).std()
+        df['BBU_20_2.0_2.0'] = df['BBM_20_2.0_2.0'] + (std * 2)
+        df['BBL_20_2.0_2.0'] = df['BBM_20_2.0_2.0'] - (std * 2)
+
+        # Basic ADX (simplified)
+        df['ADX_14'] = 25  # Default neutral value
+        df['DMP_14'] = 0
+        df['DMN_14'] = 0
+
+    return df
+
+
+@st.cache_data(ttl=3600, show_spinner="Fetching stock data...") # Cache for 1 hour
+def _fetch_stock_data(_stock_object: Stock, light_load: bool) -> Dict[str, Any]:
     """
     Fetches all necessary raw data for a stock.
     Separates data fetching from data processing.
     """
+    price_data = _stock_object.get_history(period='5y')
+
+    # Add technical indicators to price data
+    if not price_data.empty:
+        price_data = _add_technical_indicators(price_data)
+
     data = {
-        "info": stock_object.get_info(),
-        "price_data": stock_object.get_history(period='5y'),
+        "info": _stock_object.get_info(),
+        "price_data": price_data,
         "income_data": pd.DataFrame(),
         "balance_sheet_data": pd.DataFrame(),
         "cash_flow_data": pd.DataFrame(),
@@ -118,13 +206,13 @@ def _fetch_stock_data(stock_object: Stock, light_load: bool) -> Dict[str, Any]:
     }
 
     if not light_load:
-        data["income_data"] = stock_object.get_financials()
-        data["balance_sheet_data"] = stock_object.get_balance_sheet()
-        data["cash_flow_data"] = stock_object.get_cash_flow()
-        data["quarterly_income_data"] = stock_object.get_quarterly_financials()
-        data["quarterly_balance_sheet"] = stock_object.get_quarterly_balance_sheet()
-        data["quarterly_cash_flow"] = stock_object.get_quarterly_cash_flow()
-        data["news_data"] = stock_object.get_news()
+        data["income_data"] = _stock_object.get_financials()
+        data["balance_sheet_data"] = _stock_object.get_balance_sheet()
+        data["cash_flow_data"] = _stock_object.get_cash_flow()
+        data["quarterly_income_data"] = _stock_object.get_quarterly_financials()
+        data["quarterly_balance_sheet"] = _stock_object.get_quarterly_balance_sheet()
+        data["quarterly_cash_flow"] = _stock_object.get_quarterly_cash_flow()
+        data["news_data"] = _stock_object.get_news()
 
     return data
 
@@ -152,6 +240,17 @@ def initialize_data_and_context(ticker_symbol: str, light_load: bool = False) ->
 
     # --- Graceful exit for light_load where financial data is absent ---
     if light_load:
+        # Get market price for light load
+        light_market_price = 0.0
+        if raw_data["info"].get('currentPrice'):
+            light_market_price = float(raw_data["info"].get('currentPrice'))
+        elif raw_data["info"].get('regularMarketPrice'):
+            light_market_price = float(raw_data["info"].get('regularMarketPrice'))
+        elif raw_data["info"].get('previousClose'):
+            light_market_price = float(raw_data["info"].get('previousClose'))
+        elif not raw_data["price_data"].empty and 'Close' in raw_data["price_data"].columns:
+            light_market_price = float(raw_data["price_data"]["Close"].iloc[-1])
+
         # CRITICAL FIX: The previous implementation using dictionary unpacking (**raw_data, **defaults)
         # caused a TypeError because some keys existed in both dictionaries, leading to duplicate
         # keyword arguments. This fully explicit initialization is safer and guarantees correctness.
@@ -171,7 +270,7 @@ def initialize_data_and_context(ticker_symbol: str, light_load: bool = False) ->
             quarterly_cash_flow=raw_data["quarterly_cash_flow"],
             news_data=raw_data["news_data"],
             # Calculated Values
-            market_price=defaults['market_price'],
+            market_price=light_market_price,
             intrinsic_price_per_share=defaults['intrinsic_price_per_share'],
             dcf_intermediates=defaults['dcf_intermediates'],
             bullish_signals=bullish_signals,
@@ -217,6 +316,23 @@ def initialize_data_and_context(ticker_symbol: str, light_load: bool = False) ->
 
     yf_shares_value = raw_data["info"].get('sharesOutstanding', 0.0)
 
+    # --- Get Market Price ---
+    # Try multiple sources to get the most accurate current market price
+    market_price = 0.0
+
+    # Priority 1: Current price from info
+    if raw_data["info"].get('currentPrice'):
+        market_price = float(raw_data["info"].get('currentPrice'))
+    # Priority 2: Regular market price from info
+    elif raw_data["info"].get('regularMarketPrice'):
+        market_price = float(raw_data["info"].get('regularMarketPrice'))
+    # Priority 3: Previous close from info
+    elif raw_data["info"].get('previousClose'):
+        market_price = float(raw_data["info"].get('previousClose'))
+    # Priority 4: Most recent closing price from price data
+    elif not raw_data["price_data"].empty and 'Close' in raw_data["price_data"].columns:
+        market_price = float(raw_data["price_data"]["Close"].iloc[-1])
+
     # --- 4. Apply User Overrides for DCF inputs ---
     # Fix: Changed `!= 0` to `is not None` to allow explicit `0.0` as an override.
     # We use `.get()` for robustness in case `override_X` isn't set in session state.
@@ -248,7 +364,7 @@ def initialize_data_and_context(ticker_symbol: str, light_load: bool = False) ->
         quarterly_cash_flow=raw_data["quarterly_cash_flow"],
         news_data=raw_data["news_data"],
         # Calculated Values
-        market_price=defaults['market_price'],
+        market_price=market_price,
         intrinsic_price_per_share=defaults['intrinsic_price_per_share'],
         dcf_intermediates=defaults['dcf_intermediates'],
         bullish_signals=bullish_signals,
@@ -266,7 +382,8 @@ def initialize_data_and_context(ticker_symbol: str, light_load: bool = False) ->
         # Populate all other fields with their default values
         **{k: v for k, v in defaults.items() if k not in [
             'price_data_cached', 'market_price', 'intrinsic_price_per_share',
-            'dcf_intermediates', 'ddm_value', 'ddm_upside', 'nav_value', 'nav_upside'
+            'dcf_intermediates', 'ddm_value', 'ddm_upside', 'nav_value', 'nav_upside',
+            'ocf_final', 'capex_final', 'cash_final', 'debt_final', 'shares_final'
         ]}
     )
 
@@ -299,4 +416,10 @@ def _get_default_app_context_fields():
         'op_cash_flow_avg': 0.0, 'cap_ex_avg': 0.0, 'cash_yf': 0.0, 'total_debt_yf': 0.0,
         'shares_yf': 0.0, 'ocf_source': '', 'capex_source': '',
         'op_cash_flow_series': pd.Series(dtype=float), 'cap_ex_series': pd.Series(dtype=float),
+        # Missing required fields for AppContext
+        'ocf_final': 0.0,
+        'capex_final': 0.0,
+        'cash_final': 0.0,
+        'debt_final': 0.0,
+        'shares_final': 0.0,
     }

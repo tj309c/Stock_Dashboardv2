@@ -12,7 +12,7 @@ class StaticCodeAnalyzer(ast.NodeVisitor):
         self.file_path = file_path
         self.file_lines = file_content.splitlines()
         self.used_names = set()
-        self.ticker_input_vars = {} # Tracks variables assigned from st.text_input
+/        self.ticker_input_vars = {} # Tracks variables assigned from st.text_input
         self.defined_names = set()
         self.imported_aliases = {}
         self.imported_top_level_names = set()

@@ -1,8 +1,17 @@
 import yfinance as yf
+import requests
 import streamlit as st
 import pandas as pd
 from datetime import timedelta
 from alpha_vantage.fundamentaldata import FundamentalData
+from error_logger import log_error, log_warning
+
+# Import fast batch fetcher for multi-ticker operations
+try:
+    from fast_data_fetcher import get_competitor_data_fast
+    YAHOOQUERY_AVAILABLE = True
+except ImportError:
+    YAHOOQUERY_AVAILABLE = False
 
 # This function (get_stock_object) is generally useful for creating and caching
 # yfinance Ticker objects, which are then passed to other data fetching functions.
@@ -32,6 +41,11 @@ def get_company_info(_stock: yf.Ticker):
         # if the ticker is invalid or data is not available.
         # Check for essential fields to confirm validity.
         if not info_data or 'longName' not in info_data or 'marketCap' not in info_data:
+            log_warning(
+                "Invalid or incomplete company info data",
+                "data_fetcher.get_company_info",
+                {"symbol": getattr(_stock, 'ticker', 'Unknown')}
+            )
             return None
 
         # Extract relevant fields
@@ -48,8 +62,13 @@ def get_company_info(_stock: yf.Ticker):
             'fullTimeEmployees': info_data.get('fullTimeEmployees'),
         }
         return info
-    except Exception:
+    except Exception as e:
         # Catch any other potential errors during info retrieval (e.g., network issues)
+        log_error(
+            e,
+            "data_fetcher.get_company_info",
+            {"symbol": getattr(_stock, 'ticker', 'Unknown')}
+        )
         return None
 
 @st.cache_data(ttl=3600)
@@ -106,17 +125,29 @@ def get_earnings_calendar(api_key):
         return pd.DataFrame()
 
 @st.cache_data(ttl=3600)
-def get_competitor_data(competitor_tickers):
+def get_competitor_data(competitor_tickers, use_fast=True):
     """
     Fetches company information for a list of competitor tickers.
-    Optimized to call get_company_info only once per ticker.
+
+    Args:
+        competitor_tickers: List of ticker symbols
+        use_fast: If True, uses yahooquery for batch fetching (5-10x faster)
+                  If False, uses yfinance sequential fetching (more reliable)
+
+    Returns:
+        List of competitor info dictionaries
     """
+    # Use fast batch fetching if available and requested
+    if use_fast and YAHOOQUERY_AVAILABLE:
+        return get_competitor_data_fast(competitor_tickers)
+
+    # Fallback to original yfinance sequential method
     all_info = []
     for ticker_symbol in competitor_tickers:
         try:
             # Use the cached get_stock_object to get the yf.Ticker object
             stock_obj = get_stock_object(ticker_symbol)
-            
+
             # Call get_company_info ONLY ONCE per ticker.
             # get_company_info now handles internal validation and returns None for invalid tickers.
             info = get_company_info(stock_obj)
@@ -132,6 +163,154 @@ def get_competitor_data(competitor_tickers):
             st.error(f"An unexpected error occurred while processing competitor {ticker_symbol}: {e}")
             # Do not append partial or invalid data for this ticker
     return all_info
+
+
+@st.cache_data(ttl=3600)
+def get_eps_estimates_list(ticker: str) -> list:
+    """
+    Aggregate analyst EPS estimates from available providers.
+
+    Sources (in order):
+      - Alpha Vantage earnings calendar (if API key configured in st.secrets['alpha_vantage']['api_key'])
+      - yfinance Ticker.earnings_dates / calendar fields (if available)
+
+    Returns:
+        list of floats (may be empty). Values are deduplicated and sorted.
+    """
+    estimates = []
+
+    # 1) Alpha Vantage calendar (global earnings calendar) -> filter by ticker
+    try:
+        if 'alpha_vantage' in st.secrets and 'api_key' in st.secrets['alpha_vantage']:
+            api_key = st.secrets['alpha_vantage']['api_key']
+            df = get_earnings_calendar(api_key)
+
+            if not df.empty and 'Ticker' in df.columns and 'Analyst EPS' in df.columns:
+                # match ticker case-insensitively
+                rows = df[df['Ticker'].str.upper() == ticker.upper()]
+                for v in rows['Analyst EPS'].tolist():
+                    try:
+                        # Accept numeric types or numeric strings
+                        val = float(v)
+                        estimates.append(val)
+                    except Exception:
+                        continue
+    except Exception:
+        # non-fatal — continue to next source
+        pass
+
+    # 2) yfinance earnings_dates / calendar
+    try:
+        stock = get_stock_object(ticker)
+
+        # earnings_dates may be a dataframe with an 'EPS Estimate' column or similar
+        if hasattr(stock, 'earnings_dates'):
+            ed = stock.earnings_dates
+            if ed is not None and hasattr(ed, 'columns'):
+                # find any column with 'eps' or 'estimate' in the name
+                for col in ed.columns:
+                    col_lower = col.lower()
+                    if 'eps' in col_lower or 'estimate' in col_lower:
+                        # attempt to extract numeric entries
+                        for v in ed[col].dropna().tolist():
+                            try:
+                                estimates.append(float(v))
+                            except Exception:
+                                continue
+                        break
+
+        # Another common place: stock.calendar may have 'Earnings Average/Low/High' accessible
+        if hasattr(stock, 'calendar'):
+            cal = stock.calendar
+            if cal and isinstance(cal, dict):
+                # check keys like 'Earnings Average', 'Earnings Low', 'Earnings High'
+                keys = ['Earnings Average', 'Earnings Low', 'Earnings High']
+                for k in keys:
+                    if k in cal and pd.notna(cal.get(k)):
+                        try:
+                            estimates.append(float(cal.get(k)))
+                        except Exception:
+                            continue
+    except Exception:
+        pass
+
+    # 3) Additional provider fallbacks: Finnhub, FMP (FMP Cloud), Polygon
+    def _extract_numbers_from_json(obj):
+        """Recursively find numeric values in dict/list where key names look like 'eps' or 'estimate'"""
+        found = []
+
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                k_lower = str(k).lower()
+                if isinstance(v, (int, float)) and ('eps' in k_lower or 'estimate' in k_lower or 'est' in k_lower):
+                    try:
+                        found.append(float(v))
+                    except Exception:
+                        pass
+                elif isinstance(v, (list, dict)):
+                    found.extend(_extract_numbers_from_json(v))
+                else:
+                    # If value is a string that can be cast to float and key contains 'estimate' or 'eps'
+                    if isinstance(v, str) and ('eps' in k_lower or 'estimate' in k_lower or 'est' in k_lower):
+                        try:
+                            found.append(float(v))
+                        except Exception:
+                            pass
+
+        elif isinstance(obj, list):
+            for item in obj:
+                if isinstance(item, (dict, list)):
+                    found.extend(_extract_numbers_from_json(item))
+                elif isinstance(item, (int, float)):
+                    found.append(float(item))
+                elif isinstance(item, str):
+                    try:
+                        found.append(float(item))
+                    except Exception:
+                        pass
+
+        return found
+
+    try:
+        # Finnhub
+        if 'FINNHUB_API_KEY' in st.secrets:
+            key = st.secrets['FINNHUB_API_KEY']
+            url = f"https://finnhub.io/api/v1/stock/earnings?symbol={ticker}&token={key}"
+            r = requests.get(url, timeout=6)
+            if r.ok:
+                data = r.json()
+                estimates.extend([float(x) for x in _extract_numbers_from_json(data)])
+    except Exception:
+        pass
+
+    try:
+        # FinancialModelingPrep (FMP)
+        if 'FMP_API_KEY' in st.secrets:
+            key = st.secrets['FMP_API_KEY']
+            url = f"https://financialmodelingprep.com/api/v3/earnings-estimates/{ticker}?apikey={key}"
+            r = requests.get(url, timeout=6)
+            if r.ok:
+                data = r.json()
+                # the API might return list or dict
+                estimates.extend([float(x) for x in _extract_numbers_from_json(data)])
+    except Exception:
+        pass
+
+    try:
+        # Polygon (earnings reference)
+        if 'POLYGON_API_KEY' in st.secrets:
+            key = st.secrets['POLYGON_API_KEY']
+            url = f"https://api.polygon.io/v3/reference/earnings?ticker={ticker}&apiKey={key}"
+            r = requests.get(url, timeout=6)
+            if r.ok:
+                data = r.json()
+                estimates.extend([float(x) for x in _extract_numbers_from_json(data)])
+    except Exception:
+        pass
+
+    # Deduplicate, filter NaN, sort
+    cleaned = sorted({float(x) for x in estimates if x is not None and not (isinstance(x, float) and pd.isna(x))})
+    return cleaned
 
 
 @st.cache_data(ttl=3600)

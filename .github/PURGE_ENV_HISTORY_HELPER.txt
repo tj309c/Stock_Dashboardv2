@@ -1,0 +1,40 @@
+Purge tracked `.env` from Git history — quick reference
+
+WARNING: Rewriting Git history is destructive and requires force-pushing. Coordinate with your team before doing this.
+
+Option A — git-filter-repo (recommended)
+
+  # Install (Linux/Windows with Python/pip)
+  pip install git-filter-repo
+
+  # Make a fresh clone (recommended) so you can safely test before pushing
+  git clone --mirror https://github.com/OWNER/REPO.git repo.git
+  cd repo.git
+
+  # Remove the `.env` file from all history
+  git filter-repo --invert-paths --paths .env
+
+  # Push the cleaned history back to origin
+  git push origin --force --all
+  git push origin --force --tags
+
+  # Inform everyone to re-clone, or provide recovery instructions
+
+Option B — The BFG Repo-Cleaner (simpler UI)
+
+  # Download BFG: https://rtyley.github.io/bfg-repo-cleaner/
+  # Run in a mirrored clone
+  java -jar bfg.jar --delete-files .env
+  # Clean git references and garbage collect
+  git reflog expire --expire=now --all
+  git gc --prune=now --aggressive
+  git push --force
+
+After the push, collaborators must re-clone or follow instructions to safely rebase their work.
+
+Post-removal checklist:
+  - Rotate all provider keys immediately (AlphaVantage, Finnhub, FMP, Polygon, OpenAI, Anthropic, Google/Gemini, etc.).
+  - Update CI/CD variables and `.streamlit/secrets.toml` as appropriate.
+  - Add a `detect-secrets` baseline and commit it.
+
+If you'd like I can prepare a branch and pull request that does the safe repo-side changes (redaction + new example file + docs) and then outline the exact commands required locally to complete the history purge.

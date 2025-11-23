@@ -1,15 +1,36 @@
+# Core data and web framework
 streamlit
 pandas
-yfinance
-pandas-ta
-plotly
 numpy
-prophet # fbprophet is the underlying library, but prophet is the correct package name for pip
-google-generativeai
-pytz
+
+# Financial data APIs
+yfinance
+yahooquery  # Fast batch fetching for multi-ticker operations
 alpha-vantage
+
+# Technical analysis and machine learning
+ta
 scipy
+scikit-learn>=1.0.0
+hmmlearn  # Hidden Markov Models for regime detection
+
+# Visualization
+plotly
+altair
+
+# Time-series forecasting (optional but recommended)
+prophet
+
+# AI/LLM integration
+google-generativeai
+
+# Sentiment analysis and web scraping
 nltk
 requests
 beautifulsoup4
 pytrends
+lxml
+
+# Utilities
+pytz
+psutil  # System monitoring for debug dashboard

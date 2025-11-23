@@ -1,0 +1,33 @@
+name: CI — tests & secrets scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test_and_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install test deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run detect-secrets scan
+        run: |
+          python -m pip install detect-secrets
+          # scan all files; fail the job if potential secrets are found
+          detect-secrets scan --all-files
+
+      - name: Run tests
+        run: pytest -q

@@ -6,7 +6,13 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
-from pytrends.request import TrendReq
+
+# Optional import for Google Trends
+try:
+    from pytrends.request import TrendReq
+    PYTRENDS_AVAILABLE = True
+except ImportError:
+    PYTRENDS_AVAILABLE = False
 
 # --- NLTK Downloader ---
 try:
@@ -58,6 +64,9 @@ def _get_google_trends(query):
     Gets the Google Trends interest over time for a query.
     Returns the DataFrame with daily trend data.
     """
+    if not PYTRENDS_AVAILABLE:
+        return pd.DataFrame()
+
     pytrends = TrendReq(hl='en-US', tz=360)
     try:
         pytrends.build_payload([query], cat=0, timeframe='today 7-d', geo='', gprop='')

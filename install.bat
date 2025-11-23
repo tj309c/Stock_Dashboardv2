@@ -62,8 +62,8 @@ echo NEXT STEPS:
 echo 1. IMPORTANT: Edit the newly created .streamlit\secrets.toml file and add your API keys.
 echo.
 echo 2. Run the application:
-echo    streamlit run dashboard.py
+echo    streamlit run Home.py
 echo.
-echo See SETUP_GUIDE.md for detailed instructions.
+echo See docs\SETUP_GUIDE.md for detailed instructions.
 echo.
 pause

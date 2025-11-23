@@ -3,7 +3,19 @@
     "allow": [
       "Bash(for f in pages/*.py)",
       "Bash(do basename \"$f\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(git mv:*)",
+      "Bash(taskkill /F /PID 18028)",
+      "Bash(timeout /t 2 /nobreak)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(streamlit run:*)",
+      "Bash(python -m pip install:*)",
+      "Bash(for:*)",
+      "Bash(git rm:*)",
+      "Bash(python:*)",
+      "Bash(nul)",
+      "Bash(cmd /c \"taskkill /F /PID 40564 & timeout /t 2 /nobreak & streamlit run Home.py\")"
     ],
     "deny": [],
     "ask": []
