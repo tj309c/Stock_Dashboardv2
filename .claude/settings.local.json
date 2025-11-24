@@ -15,7 +15,18 @@
       "Bash(git rm:*)",
       "Bash(python:*)",
       "Bash(nul)",
-      "Bash(cmd /c \"taskkill /F /PID 40564 & timeout /t 2 /nobreak & streamlit run Home.py\")"
+      "Bash(cmd /c \"taskkill /F /PID 40564 & timeout /t 2 /nobreak & streamlit run Home.py\")",
+      "Bash(test:*)",
+      "Bash(del test_duplicate_factors_bug.py test_duplicate_factors_bug_simple.py test_cache_issue.py test_parallel_fetch.py)",
+      "Bash(dir:*)",
+      "Bash(del /s /q __pycache__)",
+      "Bash(del /s /q *.pyc)",
+      "Bash(__NEW_LINE__ mv \"BUSINESS PLAN.md\" docs/archive/business/)",
+      "Bash(__NEW_LINE__ mv BUGFIX_SESSION_SUMMARY.md docs/archive/session-notes/)",
+      "Bash(__NEW_LINE__ mv TREASURY_YIELD_CURVE_FIX.md docs/archive/bugfixes/)",
+      "Bash(__NEW_LINE__ mv TEST_RESULTS_SUMMARY.md docs/archive/test-reports/)",
+      "Bash(__NEW_LINE__ mv FEAR_GREED_PROFESSIONAL_ANALYSIS.md docs/archive/analysis/)",
+      "Bash(__NEW_LINE__ mv DCF_SMART_RECOMMENDATIONS_GUIDE.md docs/guides/)"
     ],
     "deny": [],
     "ask": []

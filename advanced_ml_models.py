@@ -7,6 +7,7 @@ Advanced Machine Learning Models for Stock Analysis
 import numpy as np
 import pandas as pd
 import streamlit as st
+from app_utils import display_dataframe_full_width
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC, SVR
 from sklearn.kernel_ridge import KernelRidge
@@ -417,7 +418,7 @@ def render_advanced_ml_analysis(ticker, price_data):
 
                     # Format as percentage
                     trans_matrix_pct = (trans_matrix * 100).round(1).astype(str) + '%'
-                    st.dataframe(trans_matrix_pct, use_container_width=True)
+                    display_dataframe_full_width(trans_matrix_pct)
 
                     # Regime timeline
                     st.markdown("#### Recent Regime History (Last 30 Days)")
@@ -427,7 +428,7 @@ def render_advanced_ml_analysis(ticker, price_data):
                     timeline_df.index = timeline_df.index.strftime('%Y-%m-%d')
                     timeline_df.columns = ['', 'Market Regime']
 
-                    st.dataframe(timeline_df, use_container_width=True)
+                    display_dataframe_full_width(timeline_df)
 
                     # Interpretation guide
                     with st.expander("📚 How to Interpret Regimes"):
@@ -540,7 +541,7 @@ def render_advanced_ml_analysis(ticker, price_data):
                     # Rename columns
                     display_df.columns = [col.replace('_', ' ').title() for col in display_df.columns]
 
-                    st.dataframe(display_df, use_container_width=True)
+                    display_dataframe_full_width(display_df)
 
                 # Interpretation guide
                 with st.expander("📚 How to Interpret Kernel Predictions"):

@@ -24,7 +24,8 @@ def test_generate_ai_market_summaries_all_returns_per_provider(monkeypatch):
     monkeypatch.setattr(ai_mod, 'get_models_by_provider', fake_get_models)
 
     # call_ai_model should return a provider-specific string
-    def fake_call_ai(model_info, prompt, max_tokens=0, temperature=0):
+    # accept session_key and other kwargs to match production call signature
+    def fake_call_ai(model_info, prompt, max_tokens=0, temperature=0, session_key=None, **kwargs):
         return f"response-from-{model_info.provider.name}"
 
     monkeypatch.setattr(ai_mod, 'call_ai_model', fake_call_ai)

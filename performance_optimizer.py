@@ -7,8 +7,10 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import wraps
 import time
+from app_utils import format_money
 from typing import Callable, Any, List, Dict
 from error_logger import log_error, log_info
+from mode_config import get_cache_ttl
 
 
 # ========================================
@@ -59,7 +61,7 @@ def parallel_execute(functions: List[tuple], max_workers: int = 5) -> Dict[str, 
 # SMART CACHING WITH COMPRESSION
 # ========================================
 
-@st.cache_data(ttl=3600, max_entries=100)
+@st.cache_data(ttl=get_cache_ttl("slow"), max_entries=100)
 def cache_with_compression(key: str, data: Any) -> Any:
     """
     Cache data with compression for large datasets
@@ -117,7 +119,7 @@ def lazy_load(ttl: int = 3600):
 # BATCH DATA FETCHING
 # ========================================
 
-@st.cache_data(ttl=900)
+@st.cache_data(ttl=get_cache_ttl("medium"))
 def batch_fetch_tickers(tickers: List[str], data_type: str = 'price') -> Dict[str, pd.DataFrame]:
     """
     Fetch data for multiple tickers in parallel
@@ -188,7 +190,7 @@ class ProgressiveLoader:
 # OPTIMIZED DATA LOADING
 # ========================================
 
-@st.cache_data(ttl=1800, show_spinner=False)
+@st.cache_data(ttl=get_cache_ttl("medium"), show_spinner=False)
 def load_ticker_essentials(ticker: str) -> Dict[str, Any]:
     """
     Load only essential data for a ticker in one optimized call
@@ -366,6 +368,91 @@ class PerformanceMonitor:
 
 
 # ========================================
+# TIME ESTIMATION FOR RELOAD OPERATIONS
+# ========================================
+
+def estimate_reload_time(operation_pattern: str = None) -> dict:
+    """
+    Estimate how long a reload operation will take based on historical data
+
+    Args:
+        operation_pattern: Optional pattern to match specific operations
+                          e.g., 'cache_clear', 'fetch', 'news'
+
+    Returns:
+        Dict with 'min', 'max', 'avg' times in seconds, and 'count' of samples
+    """
+    if 'performance_metrics' not in st.session_state or not st.session_state.performance_metrics:
+        return {'min': 0, 'max': 0, 'avg': 0, 'count': 0}
+
+    metrics = st.session_state.performance_metrics
+
+    # Filter by pattern if provided
+    if operation_pattern:
+        filtered = [m for m in metrics if operation_pattern.lower() in m['operation'].lower()]
+    else:
+        filtered = metrics
+
+    if not filtered:
+        return {'min': 0, 'max': 0, 'avg': 0, 'count': 0}
+
+    durations = [m['duration'] for m in filtered]
+
+    return {
+        'min': min(durations),
+        'max': max(durations),
+        'avg': sum(durations) / len(durations),
+        'count': len(durations)
+    }
+
+
+def get_cache_reload_estimate() -> dict:
+    """
+    Estimate time to reload all cached data after cache clear
+    Looks at recent fetch operations to predict reload time
+
+    Returns:
+        Dict with estimated time range and whether to show warning
+    """
+    # Get all recent fetch/load operations
+    fetch_estimate = estimate_reload_time('fetch')
+    load_estimate = estimate_reload_time('load')
+
+    # Combine estimates
+    all_ops = []
+    if 'performance_metrics' in st.session_state:
+        all_ops = [
+            m for m in st.session_state.performance_metrics
+            if any(keyword in m['operation'].lower() for keyword in ['fetch', 'load', 'init'])
+        ]
+
+    if not all_ops:
+        return {
+            'estimated_min': 10,
+            'estimated_max': 30,
+            'show_warning': True,
+            'confidence': 'low'
+        }
+
+    # Calculate conservative estimates
+    durations = [m['duration'] for m in all_ops]
+    avg_duration = sum(durations) / len(durations)
+    max_duration = max(durations)
+
+    # Estimate based on typical reload pattern
+    # Usually 3-10 cached items get reloaded on next page interaction
+    estimated_min = int(avg_duration * 3)
+    estimated_max = int(max_duration * 10)
+
+    return {
+        'estimated_min': estimated_min,
+        'estimated_max': estimated_max,
+        'show_warning': estimated_max > 15,
+        'confidence': 'high' if len(durations) > 10 else 'medium'
+    }
+
+
+# ========================================
 # USAGE EXAMPLES
 # ========================================
 
@@ -389,7 +476,7 @@ def example_optimized_page_load(ticker: str):
 
     # 4. Show immediate content
     st.write(f"**{essentials['info'].get('longName', ticker)}**")
-    st.metric("Price", f"${essentials['info'].get('currentPrice', 0):.2f}")
+    st.metric("Price", format_money(essentials['info'].get('currentPrice', 0)))
 
     # 5. Load additional data in parallel (if needed)
     if st.session_state.get('load_full_data', False):

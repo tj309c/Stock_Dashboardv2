@@ -30,9 +30,9 @@ except Exception:  # pragma: no cover - environment-dependent
 class AIProvider(Enum):
     """Supported AI providers"""
     GEMINI = "Google Gemini"
-    # OPENAI = "OpenAI"  # Disabled - enable when API key is valid
-    # CLAUDE = "Anthropic Claude"  # Disabled - enable when API key is valid
-    # GROK = "X.AI Grok"  # Disabled - enable when API key is valid
+    OPENAI = "OpenAI"
+    CLAUDE = "Anthropic Claude"
+    GROK = "X.AI Grok"
 
 
 @dataclass
@@ -122,8 +122,72 @@ GEMINI_MODELS = [
     ),
 ]
 
-# Disabled - OpenAI models
-OPENAI_MODELS = []
+OPENAI_MODELS = [
+    AIModelInfo(
+        provider=AIProvider.OPENAI,
+        model_id="gpt-4o",
+        display_name="GPT-4o",
+        description="OpenAI's most advanced multimodal model",
+        tier="premium",
+        input_token_limit=128000,
+        output_token_limit=16384,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=2.50,
+        cost_per_1k_output=10.00
+    ),
+    AIModelInfo(
+        provider=AIProvider.OPENAI,
+        model_id="gpt-4o-mini",
+        display_name="GPT-4o Mini",
+        description="Fast, affordable, intelligent small model",
+        tier="fast",
+        input_token_limit=128000,
+        output_token_limit=16384,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=0.15,
+        cost_per_1k_output=0.60
+    ),
+    AIModelInfo(
+        provider=AIProvider.OPENAI,
+        model_id="gpt-4-turbo",
+        display_name="GPT-4 Turbo",
+        description="High-intelligence model for complex tasks",
+        tier="premium",
+        input_token_limit=128000,
+        output_token_limit=4096,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=10.00,
+        cost_per_1k_output=30.00
+    ),
+    AIModelInfo(
+        provider=AIProvider.OPENAI,
+        model_id="gpt-3.5-turbo",
+        display_name="GPT-3.5 Turbo",
+        description="Fast, inexpensive for simple tasks",
+        tier="lite",
+        input_token_limit=16385,
+        output_token_limit=4096,
+        supports_function_calling=True,
+        cost_per_1k_input=0.50,
+        cost_per_1k_output=1.50
+    ),
+    AIModelInfo(
+        provider=AIProvider.OPENAI,
+        model_id="gpt-4o-extended",
+        display_name="GPT-4o Extended",
+        description="Higher-context GPT-4o variant for long-form analysis",
+        tier="fast",
+        input_token_limit=256000,
+        output_token_limit=32768,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=0.35,
+        cost_per_1k_output=1.25
+    ),
+]
 """
 OPENAI_MODELS_DISABLED = [
     AIModelInfo(
@@ -193,8 +257,60 @@ OPENAI_MODELS_DISABLED = [
 ]
 """
 
-# Disabled - Claude models
-CLAUDE_MODELS = []
+CLAUDE_MODELS = [
+    AIModelInfo(
+        provider=AIProvider.CLAUDE,
+        model_id="claude-sonnet-4-5-20250929",
+        display_name="Claude 4.5 Sonnet",
+        description="Latest Claude - balanced intelligence and speed",
+        tier="premium",
+        input_token_limit=200000,
+        output_token_limit=8192,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=3.00,
+        cost_per_1k_output=15.00
+    ),
+    AIModelInfo(
+        provider=AIProvider.CLAUDE,
+        model_id="claude-3-5-sonnet-20241022",
+        display_name="Claude 3.5 Sonnet",
+        description="Balance of intelligence and speed",
+        tier="standard",
+        input_token_limit=200000,
+        output_token_limit=8192,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=3.00,
+        cost_per_1k_output=15.00
+    ),
+    AIModelInfo(
+        provider=AIProvider.CLAUDE,
+        model_id="claude-3-5-haiku-20241022",
+        display_name="Claude 3.5 Haiku",
+        description="Fast and affordable",
+        tier="fast",
+        input_token_limit=200000,
+        output_token_limit=8192,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=0.80,
+        cost_per_1k_output=4.00
+    ),
+    AIModelInfo(
+        provider=AIProvider.CLAUDE,
+        model_id="claude-3-opus-20240229",
+        display_name="Claude 3 Opus",
+        description="Most powerful Claude model",
+        tier="premium",
+        input_token_limit=200000,
+        output_token_limit=4096,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=15.00,
+        cost_per_1k_output=75.00
+    ),
+]
 """
 CLAUDE_MODELS_DISABLED = [
     AIModelInfo(
@@ -291,11 +407,49 @@ GROK_MODELS = [
 ]
 """
 
-# Disabled - Grok models
-GROK_MODELS = []
+GROK_MODELS = [
+    AIModelInfo(
+        provider=AIProvider.GROK,
+        model_id="grok-beta",
+        display_name="Grok Beta",
+        description="X.AI's conversational AI with real-time X data access",
+        tier="standard",
+        input_token_limit=131072,
+        output_token_limit=4096,
+        supports_function_calling=True,
+        cost_per_1k_input=5.00,
+        cost_per_1k_output=15.00
+    ),
+    AIModelInfo(
+        provider=AIProvider.GROK,
+        model_id="grok-vision-beta",
+        display_name="Grok Vision Beta",
+        description="Grok with vision capabilities",
+        tier="premium",
+        input_token_limit=131072,
+        output_token_limit=4096,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=5.00,
+        cost_per_1k_output=15.00
+    ),
+    AIModelInfo(
+        provider=AIProvider.GROK,
+        model_id="grok-pro-2025",
+        display_name="Grok Pro (2025)",
+        description="Stable Grok Pro variant for testing and higher throughput",
+        tier="standard",
+        input_token_limit=131072,
+        output_token_limit=4096,
+        supports_vision=True,
+        supports_function_calling=True,
+        cost_per_1k_input=4.50,
+        cost_per_1k_output=12.00
+    ),
+]
 
-# Combine all models - Only Gemini enabled
-ALL_MODELS = GEMINI_MODELS  # + OPENAI_MODELS + CLAUDE_MODELS + GROK_MODELS
+# Combine all models
+ALL_MODELS = GEMINI_MODELS + OPENAI_MODELS + CLAUDE_MODELS + GROK_MODELS
 
 # Default model
 DEFAULT_MODEL = "gemini-2.5-flash"
@@ -327,9 +481,9 @@ def is_provider_configured(provider: AIProvider) -> bool:
     """Check if API key is configured for a provider"""
     key_mapping = {
         AIProvider.GEMINI: ['GOOGLE_API_KEY', 'GEMINI_API_KEY'],  # Support both key names
-        # AIProvider.OPENAI: ['OPENAI_API_KEY'],  # Disabled
-        # AIProvider.CLAUDE: ['ANTHROPIC_API_KEY'],  # Disabled
-        # AIProvider.GROK: ['XAI_API_KEY']  # Disabled
+        AIProvider.OPENAI: ['OPENAI_API_KEY'],
+        AIProvider.CLAUDE: ['ANTHROPIC_API_KEY'],
+        AIProvider.GROK: ['XAI_API_KEY']
     }
 
     possible_keys = key_mapping.get(provider, [])
@@ -535,29 +689,29 @@ def create_model_client(model_id: Optional[str] = None, session_key: str = "sele
         genai.configure(api_key=api_key)
         return genai.GenerativeModel(model_id)
 
-    # elif model_info.provider == AIProvider.OPENAI:
-    #     # Use the module-level OpenAI class (patched in tests) if available.
-    #     if OpenAI is None:
-    #         raise ValueError("openai SDK is not available")
-    #     if 'OPENAI_API_KEY' not in st.secrets:
-    #         raise ValueError("OPENAI_API_KEY not configured")
-    #     return OpenAI(api_key=st.secrets['OPENAI_API_KEY'])
-    #
-    # elif model_info.provider == AIProvider.CLAUDE:
-    #     # Use module-level anthropic (patched in tests) if available.
-    #     if anthropic is None:
-    #         raise ValueError("anthropic SDK is not available")
-    #     if 'ANTHROPIC_API_KEY' not in st.secrets:
-    #         raise ValueError("ANTHROPIC_API_KEY not configured")
-    #     return anthropic.Anthropic(api_key=st.secrets['ANTHROPIC_API_KEY'])
-    #
-    # elif model_info.provider == AIProvider.GROK:
-    #     # Grok is OpenAI-compatible; use module-level OpenAI class if available
-    #     if OpenAI is None:
-    #         raise ValueError("openai SDK is not available for GROK")
-    #     if 'XAI_API_KEY' not in st.secrets:
-    #         raise ValueError("XAI_API_KEY not configured")
-    #     return OpenAI(api_key=st.secrets['XAI_API_KEY'], base_url="https://api.x.ai/v1")
+    elif model_info.provider == AIProvider.OPENAI:
+        # Use the module-level OpenAI class (patched in tests) if available.
+        if OpenAI is None:
+            raise ValueError("openai SDK is not available")
+        if 'OPENAI_API_KEY' not in st.secrets:
+            raise ValueError("OPENAI_API_KEY not configured")
+        return OpenAI(api_key=st.secrets['OPENAI_API_KEY'])
+
+    elif model_info.provider == AIProvider.CLAUDE:
+        # Use module-level anthropic (patched in tests) if available.
+        if anthropic is None:
+            raise ValueError("anthropic SDK is not available")
+        if 'ANTHROPIC_API_KEY' not in st.secrets:
+            raise ValueError("ANTHROPIC_API_KEY not configured")
+        return anthropic.Anthropic(api_key=st.secrets['ANTHROPIC_API_KEY'])
+
+    elif model_info.provider == AIProvider.GROK:
+        # Grok is OpenAI-compatible; use module-level OpenAI class if available
+        if OpenAI is None:
+            raise ValueError("openai SDK is not available for GROK")
+        if 'XAI_API_KEY' not in st.secrets:
+            raise ValueError("XAI_API_KEY not configured")
+        return OpenAI(api_key=st.secrets['XAI_API_KEY'], base_url="https://api.x.ai/v1")
 
     else:
         raise ValueError(f"Unsupported provider: {model_info.provider}. Only Gemini is currently enabled.")
@@ -645,23 +799,23 @@ def call_ai_model(
             response = client.generate_content(prompt)
             return response.text
 
-        # elif model_info.provider == AIProvider.OPENAI or model_info.provider == AIProvider.GROK:
-        #     response = client.chat.completions.create(
-        #         model=model_info.model_id,
-        #         messages=[{"role": "user", "content": prompt}],
-        #         max_tokens=max_tokens,
-        #         temperature=temperature
-        #     )
-        #     return response.choices[0].message.content
-        #
-        # elif model_info.provider == AIProvider.CLAUDE:
-        #     response = client.messages.create(
-        #         model=model_info.model_id,
-        #         max_tokens=max_tokens,
-        #         temperature=temperature,
-        #         messages=[{"role": "user", "content": prompt}]
-        #     )
-        #     return response.content[0].text
+        elif model_info.provider == AIProvider.OPENAI or model_info.provider == AIProvider.GROK:
+            response = client.chat.completions.create(
+                model=model_info.model_id,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=max_tokens,
+                temperature=temperature
+            )
+            return response.choices[0].message.content
+
+        elif model_info.provider == AIProvider.CLAUDE:
+            response = client.messages.create(
+                model=model_info.model_id,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.content[0].text
 
         else:
             raise ValueError(f"Unsupported provider: {model_info.provider}. Only Gemini is currently enabled.")

@@ -7,9 +7,10 @@ def test_call_ai_model_returns_failed_when_openai_missing(monkeypatch):
     # Simulate missing openai SDK
     monkeypatch.setattr(ai, 'OpenAI', None)
 
+    # Use a real model id from the catalog so create_model_client reaches the SDK-check path
     model_info = ai.AIModelInfo(
         provider=ai.AIProvider.OPENAI,
-        model_id='gpt-test',
+        model_id='gpt-3.5-turbo',
         display_name='Test',
         description='',
         tier='lite',
@@ -29,9 +30,10 @@ def test_call_ai_model_returns_failed_when_anthropic_missing(monkeypatch):
     # Simulate missing anthropic SDK
     monkeypatch.setattr(ai, 'anthropic', None)
 
+    # Use a real Claude model id from the catalog
     model_info = ai.AIModelInfo(
         provider=ai.AIProvider.CLAUDE,
-        model_id='claude-test',
+        model_id='claude-3-5-haiku-20241022',
         display_name='Test',
         description='',
         tier='lite',
@@ -51,9 +53,10 @@ def test_call_ai_model_returns_failed_when_openai_missing_for_grok(monkeypatch):
     # Simulate missing OpenAI SDK (used for GROK)
     monkeypatch.setattr(ai, 'OpenAI', None)
 
+    # Use a real Grok model id from the catalog
     model_info = ai.AIModelInfo(
         provider=ai.AIProvider.GROK,
-        model_id='grok-test',
+        model_id='grok-beta',
         display_name='Test',
         description='',
         tier='lite',

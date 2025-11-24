@@ -1,23 +1,29 @@
 import streamlit as st
 import pandas as pd
 from app_logic import initialize_data_and_context
+from app_utils import display_dataframe_full_width, plotly_full_width, full_width_button
 from valuation_models import calculate_ddm, calculate_dcf
 from ticker_utils import setup_sidebar_ticker_input
+from mode_config import render_mode_info, should_show_feature
 import datetime
 
 def render_page():
     """Consolidated Fundamental Analysis Dashboard"""
     st.title("🔬 Fundamental Analysis")
+    st.caption("Deep dive into company financials, valuation models, and long-term fundamentals")
+
+    # Display current trading mode
+    render_mode_info()
 
     # Setup ticker input in sidebar
     ticker = setup_sidebar_ticker_input("fundamental_analysis")
 
-    # Create tabs for the four fundamental sections
+    # Create tabs for the three fundamental sections
     tab1, tab2, tab3, tab4 = st.tabs([
         "📊 Key Metrics",
         "💰 Valuation Models",
         "📄 Financial Statements",
-        "⭐ Analyst Ratings"
+        "🔧 Debug"
     ])
 
     with tab1:
@@ -30,7 +36,7 @@ def render_page():
         render_financial_statements_tab(ticker)
 
     with tab4:
-        render_analyst_ratings_tab(ticker)
+        render_debug_tab_fundamental(ticker)
 
 
 def render_key_metrics_tab(ticker):
@@ -76,10 +82,16 @@ def render_valuation_models_tab(ticker):
 
     # Get current market data for defaults
     info = ctx.info if ctx and ctx.info else {}
-    current_revenue = info.get('totalRevenue', 1_000_000_000)
-    shares_outstanding = info.get('sharesOutstanding', 1_000_000_000)
+    current_revenue = info.get('totalRevenue')
+    shares_outstanding = info.get('sharesOutstanding')
     cash = info.get('totalCash', 0)
     total_debt = info.get('totalDebt', 0)
+
+    # Validate required data is available
+    if not current_revenue or not shares_outstanding:
+        st.error(f"⚠️ Unable to load required financial data for {ticker}. DCF valuation requires revenue and shares outstanding data.")
+        st.info("This could mean:\n- The ticker is incorrect\n- The company doesn't have complete financial data available\n- YFinance API is experiencing issues\n\nPlease try a different ticker or check back later.")
+        return
 
     # Create tabs for DCF and DDM
     dcf_tab, ddm_tab = st.tabs(["📊 DCF Model", "💵 DDM Model"])
@@ -261,33 +273,38 @@ def render_valuation_models_tab(ticker):
         if use_smart_defaults:
             from dcf_helpers import get_smart_dcf_recommendations
 
-            # Generate smart recommendations
-            recommendations = get_smart_dcf_recommendations(
-                info=info,
-                income_data=ctx.income_data if ctx else pd.DataFrame(),
-                balance_sheet=ctx.balance_sheet_data if ctx else pd.DataFrame(),
-                cash_flow=ctx.cash_flow_data if ctx else pd.DataFrame(),
-                market_price=ctx.market_price if ctx else 100
-            )
+            # Validate market price is available
+            if not ctx or not ctx.market_price:
+                st.warning("⚠️ Unable to load current market price. Smart recommendations require live price data.")
+                st.info("Please ensure the ticker is valid and try again.")
+            else:
+                # Generate smart recommendations with real data only
+                recommendations = get_smart_dcf_recommendations(
+                    info=info,
+                    income_data=ctx.income_data if ctx else pd.DataFrame(),
+                    balance_sheet=ctx.balance_sheet_data if ctx else pd.DataFrame(),
+                    cash_flow=ctx.cash_flow_data if ctx else pd.DataFrame(),
+                    market_price=ctx.market_price
+                )
 
-            # Display recommendation summary
-            with st.expander("📊 View Smart Recommendations Rationale", expanded=True):
-                st.markdown(f"**Sector**: {recommendations['sector']}")
-                st.markdown(f"**Historical Revenue CAGR (5Y)**: {recommendations['historical_revenue_cagr']:.1%}")
-                st.markdown(f"**Recent Revenue Growth**: {recommendations['recent_revenue_growth']:.1%}")
+                # Display recommendation summary
+                with st.expander("📊 View Smart Recommendations Rationale", expanded=True):
+                    st.markdown(f"**Sector**: {recommendations['sector']}")
+                    st.markdown(f"**Historical Revenue CAGR (5Y)**: {recommendations['historical_revenue_cagr']:.1%}")
+                    st.markdown(f"**Recent Revenue Growth**: {recommendations['recent_revenue_growth']:.1%}")
 
-                st.markdown("---")
-                st.markdown("**📈 Confidence Analysis:**")
-                for key, note in recommendations['confidence_notes'].items():
-                    st.markdown(f"- {note}")
+                    st.markdown("---")
+                    st.markdown("**📈 Confidence Analysis:**")
+                    for key, note in recommendations['confidence_notes'].items():
+                        st.markdown(f"- {note}")
 
-                st.markdown("---")
-                st.markdown("**🏭 Industry Benchmarks Used:**")
-                industry = recommendations['industry_benchmarks']
-                st.markdown(f"- Growth Rate: {industry['growth_rate']:.1%}")
-                st.markdown(f"- EBIT Margin: {industry['ebit_margin']:.1%}")
-                st.markdown(f"- CapEx: {industry['capex_pct']:.1%} of revenue")
-                st.markdown(f"- ROIC: {industry['roic']:.1%}")
+                    st.markdown("---")
+                    st.markdown("**🏭 Industry Benchmarks Used:**")
+                    industry = recommendations['industry_benchmarks']
+                    st.markdown(f"- Growth Rate: {industry['growth_rate']:.1%}")
+                    st.markdown(f"- EBIT Margin: {industry['ebit_margin']:.1%}")
+                    st.markdown(f"- CapEx: {industry['capex_pct']:.1%} of revenue")
+                    st.markdown(f"- ROIC: {industry['roic']:.1%}")
 
         # Advanced mode toggle
         advanced_mode = st.checkbox("Enable Advanced Features (WACC Calculator, ROIC, Monte Carlo)", value=False)
@@ -410,11 +427,11 @@ def render_valuation_models_tab(ticker):
         # Calculate button
         calc_col1, calc_col2, calc_col3 = st.columns(3)
         with calc_col1:
-            run_base_case = st.button("Calculate Base Case", type="primary", use_container_width=True)
+            run_base_case = full_width_button("Calculate Base Case", type="primary")
         with calc_col2:
-            run_scenario = st.button("Run Scenario Analysis", use_container_width=True)
+            run_scenario = full_width_button("Run Scenario Analysis")
         with calc_col3:
-            run_monte_carlo = st.button("Monte Carlo (10k sims)", use_container_width=True) if advanced_mode else False
+            run_monte_carlo = full_width_button("Monte Carlo (10k sims)") if advanced_mode else False
 
         if run_base_case or run_scenario or run_monte_carlo:
             from valuation_models import (
@@ -498,10 +515,8 @@ def render_valuation_models_tab(ticker):
                     st.metric("Probability-Weighted", f"${weighted_val:.2f}", f"{((weighted_val/market_price - 1)*100):+.1f}%")
 
                 # Football Field Chart
-                st.plotly_chart(
-                    create_football_field_chart(intrinsic_value, market_price, scenarios),
-                    use_container_width=True
-                )
+                from app_utils import plotly_full_width
+                plotly_full_width(create_football_field_chart(intrinsic_value, market_price, scenarios))
 
             # Monte Carlo Simulation
             if run_monte_carlo and advanced_mode:
@@ -519,27 +534,21 @@ def render_valuation_models_tab(ticker):
                 with mc_col4:
                     st.metric("Std Dev", f"${mc_results['std']:.2f}")
 
-                st.plotly_chart(
-                    create_monte_carlo_distribution(mc_results, market_price),
-                    use_container_width=True
-                )
+                plotly_full_width(create_monte_carlo_distribution(mc_results, market_price))
 
             # Sensitivity Analysis
             st.markdown("### Sensitivity Analysis")
             value_matrix, wacc_vals, tg_vals = calculate_sensitivity_table(dcf_inputs, steps=7)
-            st.plotly_chart(
-                create_sensitivity_heatmap(value_matrix, wacc_vals, tg_vals, market_price),
-                use_container_width=True
-            )
+            plotly_full_width(create_sensitivity_heatmap(value_matrix, wacc_vals, tg_vals, market_price))
 
             # Visualizations
             viz_tab1, viz_tab2 = st.tabs(["Cash Flow Projection", "Waterfall Chart"])
 
             with viz_tab1:
-                st.plotly_chart(create_fcf_projection_chart(intermediates), use_container_width=True)
+                plotly_full_width(create_fcf_projection_chart(intermediates))
 
             with viz_tab2:
-                st.plotly_chart(create_dcf_waterfall_chart(intermediates, market_price), use_container_width=True)
+                plotly_full_width(create_dcf_waterfall_chart(intermediates, market_price))
 
             # Detailed breakdown
             with st.expander("View Detailed Calculations"):
@@ -566,7 +575,7 @@ def render_valuation_models_tab(ticker):
                     'FCF': intermediates.get('fcf_forecast', []),
                     'Discounted FCF': intermediates.get('discounted_fcf', [])
                 })
-                st.dataframe(proj_df, use_container_width=True)
+                display_dataframe_full_width(proj_df)
 
     with ddm_tab:
         st.markdown("### Dividend Discount Model (DDM) Valuation")
@@ -598,69 +607,293 @@ def render_financial_statements_tab(ticker):
     if view_type == "Annual":
         st.markdown("### Income Statement")
         if not ctx.income_data.empty:
-            st.dataframe(ctx.income_data, use_container_width=True)
+            display_dataframe_full_width(ctx.income_data)
         else:
             st.info("No annual income statement data available")
 
         st.markdown("### Balance Sheet")
         if not ctx.balance_sheet_data.empty:
-            st.dataframe(ctx.balance_sheet_data, use_container_width=True)
+            display_dataframe_full_width(ctx.balance_sheet_data)
         else:
             st.info("No annual balance sheet data available")
 
         st.markdown("### Cash Flow Statement")
         if not ctx.cash_flow_data.empty:
-            st.dataframe(ctx.cash_flow_data, use_container_width=True)
+            display_dataframe_full_width(ctx.cash_flow_data)
         else:
             st.info("No annual cash flow data available")
     else:
         st.markdown("### Quarterly Income Statement")
         if not ctx.quarterly_income_data.empty:
-            st.dataframe(ctx.quarterly_income_data, use_container_width=True)
+            display_dataframe_full_width(ctx.quarterly_income_data)
         else:
             st.info("No quarterly income statement data available")
 
         st.markdown("### Quarterly Balance Sheet")
         if not ctx.quarterly_balance_sheet.empty:
-            st.dataframe(ctx.quarterly_balance_sheet, use_container_width=True)
+            display_dataframe_full_width(ctx.quarterly_balance_sheet)
         else:
             st.info("No quarterly balance sheet data available")
 
         st.markdown("### Quarterly Cash Flow Statement")
         if not ctx.quarterly_cash_flow.empty:
-            st.dataframe(ctx.quarterly_cash_flow, use_container_width=True)
+            display_dataframe_full_width(ctx.quarterly_cash_flow)
         else:
             st.info("No quarterly cash flow data available")
 
 
-def render_analyst_ratings_tab(ticker):
-    """Analyst ratings and recommendations"""
-    st.subheader(f"Analyst Ratings for {ticker}")
+# ========================================
+# DEBUG TAB
+# ========================================
 
-    ctx = initialize_data_and_context(ticker, light_load=True)
-    info = ctx.info if ctx and ctx.info else {}
+def render_debug_tab_fundamental(ticker):
+    """Debug tab for Fundamental Analysis page"""
+    st.markdown("### 🔧 Fundamental Analysis Debug Panel")
 
-    col1, col2 = st.columns(2)
+    st.info("""
+    **Purpose**: Diagnose data quality, valuation model inputs, and financial statement availability.
+    """)
 
-    with col1:
-        st.markdown("#### Recommendations")
-        target_high = info.get('targetHighPrice', 'N/A')
-        target_low = info.get('targetLowPrice', 'N/A')
-        target_mean = info.get('targetMeanPrice', 'N/A')
-        target_median = info.get('targetMedianPrice', 'N/A')
+    # Section 1: Session State Variables
+    with st.expander("📦 Session State Variables", expanded=False):
+        st.markdown("**Current session state keys and values:**")
+        if st.session_state:
+            state_dict = {k: str(v)[:200] for k, v in st.session_state.items()}
+            st.json(state_dict)
+        else:
+            st.write("No session state variables found")
 
-        st.metric("Target High", f"${target_high}" if target_high != 'N/A' else "N/A")
-        st.metric("Target Low", f"${target_low}" if target_low != 'N/A' else "N/A")
-        st.metric("Target Mean", f"${target_mean}" if target_mean != 'N/A' else "N/A")
-        st.metric("Target Median", f"${target_median}" if target_median != 'N/A' else "N/A")
+    # Section 2: Fundamental Data Quality Check
+    with st.expander("🎯 Fundamental Data Quality Check", expanded=True):
+        st.markdown(f"**Checking fundamental data completeness for {ticker}:**")
 
-    with col2:
-        st.markdown("#### Consensus")
-        recommendation = info.get('recommendationKey', 'N/A')
-        num_analysts = info.get('numberOfAnalystOpinions', 'N/A')
+        ctx = initialize_data_and_context(ticker)
+        info = ctx.info if ctx and ctx.info else {}
 
-        st.info(f"**Recommendation:** {recommendation}")
-        st.info(f"**Number of Analysts:** {num_analysts}")
+        # Define critical fundamental data points
+        checks = {
+            "Company Info Loaded": bool(info),
+            "Revenue Data": info.get('totalRevenue') is not None,
+            "Shares Outstanding": info.get('sharesOutstanding') is not None,
+            "Profit Margins": info.get('profitMargins') is not None,
+            "Operating Margins": info.get('operatingMargins') is not None,
+            "ROE": info.get('returnOnEquity') is not None,
+            "ROA": info.get('returnOnAssets') is not None,
+            "P/E Ratio": info.get('trailingPE') is not None,
+            "Forward P/E": info.get('forwardPE') is not None,
+            "Price to Book": info.get('priceToBook') is not None,
+            "Dividend Info": info.get('dividendRate') is not None,
+            "Market Cap": info.get('marketCap') is not None,
+            "52 Week High": info.get('fiftyTwoWeekHigh') is not None,
+            "52 Week Low": info.get('fiftyTwoWeekLow') is not None,
+            "Beta": info.get('beta') is not None
+        }
+
+        # Display check results
+        col1, col2 = st.columns(2)
+        for i, (check_name, passed) in enumerate(checks.items()):
+            if i % 2 == 0:
+                col1.markdown(f"{'✅' if passed else '❌'} {check_name}")
+            else:
+                col2.markdown(f"{'✅' if passed else '❌'} {check_name}")
+
+        completeness_score = sum(checks.values())
+        total_checks = len(checks)
+        completeness_pct = (completeness_score / total_checks) * 100
+
+        st.markdown("---")
+        st.metric("Fundamental Data Completeness", f"{completeness_pct:.0f}%")
+
+        if completeness_pct < 60:
+            st.error("❌ Critical fundamental data is missing. This ticker may not be suitable for analysis.")
+        elif completeness_pct < 80:
+            st.warning("⚠️ Some fundamental data is missing. Results may be incomplete.")
+        else:
+            st.success("✅ Fundamental data is comprehensive!")
+
+    # Section 3: Financial Statements Availability
+    with st.expander("📄 Financial Statements Availability", expanded=True):
+        st.markdown("**Checking availability of financial statements:**")
+
+        ctx = initialize_data_and_context(ticker)
+
+        statements = {
+            "Annual Income Statement": not ctx.income_data.empty if ctx else False,
+            "Annual Balance Sheet": not ctx.balance_sheet_data.empty if ctx else False,
+            "Annual Cash Flow": not ctx.cash_flow_data.empty if ctx else False,
+            "Quarterly Income Statement": not ctx.quarterly_income_data.empty if ctx else False,
+            "Quarterly Balance Sheet": not ctx.quarterly_balance_sheet.empty if ctx else False,
+            "Quarterly Cash Flow": not ctx.quarterly_cash_flow.empty if ctx else False
+        }
+
+        for statement, available in statements.items():
+            status = "✅ Available" if available else "❌ Not Available"
+            row_count = 0
+            col_count = 0
+
+            if available and ctx:
+                if "Income" in statement:
+                    data = ctx.quarterly_income_data if "Quarterly" in statement else ctx.income_data
+                elif "Balance" in statement:
+                    data = ctx.quarterly_balance_sheet if "Quarterly" in statement else ctx.balance_sheet_data
+                elif "Cash" in statement:
+                    data = ctx.quarterly_cash_flow if "Quarterly" in statement else ctx.cash_flow_data
+                else:
+                    data = pd.DataFrame()
+
+                row_count = len(data) if not data.empty else 0
+                col_count = len(data.columns) if not data.empty else 0
+
+            st.markdown(f"**{statement}**: {status}")
+            if available:
+                st.caption(f"  └─ Dimensions: {row_count} rows × {col_count} columns")
+
+        st.markdown("---")
+        available_count = sum(statements.values())
+        st.metric("Statements Available", f"{available_count}/6")
+
+    # Section 4: Valuation Model Inputs Check
+    with st.expander("💰 Valuation Model Inputs Check", expanded=False):
+        st.markdown("**Checking if valuation models (DCF, DDM) can be run:**")
+
+        ctx = initialize_data_and_context(ticker)
+        info = ctx.info if ctx and ctx.info else {}
+
+        # DCF Requirements
+        st.markdown("**📊 DCF Model Requirements:**")
+        dcf_checks = {
+            "Total Revenue": info.get('totalRevenue'),
+            "Shares Outstanding": info.get('sharesOutstanding'),
+            "Total Cash": info.get('totalCash', 0),
+            "Total Debt": info.get('totalDebt', 0)
+        }
+
+        dcf_ready = True
+        for field, value in dcf_checks.items():
+            has_value = value is not None and value != 0
+            st.markdown(f"{'✅' if has_value else '❌'} {field}: {f'${value:,.0f}' if has_value else 'Missing'}")
+            if field in ["Total Revenue", "Shares Outstanding"] and not has_value:
+                dcf_ready = False
+
+        if dcf_ready:
+            st.success("✅ DCF Model can be run!")
+        else:
+            st.error("❌ DCF Model missing critical inputs (Revenue or Shares)")
+
+        st.markdown("---")
+        st.markdown("**💵 DDM Model Requirements:**")
+        ddm_checks = {
+            "Dividend Rate": info.get('dividendRate'),
+            "Current Price": info.get('currentPrice') or info.get('regularMarketPrice')
+        }
+
+        ddm_ready = True
+        for field, value in ddm_checks.items():
+            has_value = value is not None and value > 0
+            st.markdown(f"{'✅' if has_value else '❌'} {field}: {f'${value:.2f}' if has_value else 'Missing'}")
+            if not has_value:
+                ddm_ready = False
+
+        if ddm_ready:
+            st.success("✅ DDM Model can be run!")
+        else:
+            st.warning("⚠️ DDM Model requires dividend-paying stocks")
+
+    # Section 5: Cache Status
+    with st.expander("💾 Cache Status", expanded=False):
+        st.markdown("**Streamlit cache information:**")
+
+        st.markdown("""
+        **Cached functions in this page:**
+        - `initialize_data_and_context()` - Main ticker data loader
+        - `calculate_dcf()` - DCF valuation calculations
+        - `calculate_ddm()` - DDM valuation calculations
+
+        **Note**: Cache is automatically managed by Streamlit with TTL (Time-To-Live).
+        """)
+
+        if st.button("🗑️ Clear All Caches", key="clear_cache_fundamental"):
+            st.cache_data.clear()
+            st.success("✅ All caches cleared! Refresh the page to reload data.")
+
+    # Section 6: Performance Metrics
+    with st.expander("⚡ Performance Metrics", expanded=False):
+        st.markdown("**Data loading performance:**")
+
+        import time
+
+        # Test ticker data fetch
+        start = time.time()
+        try:
+            test_ctx = initialize_data_and_context(ticker)
+            load_time = time.time() - start
+            load_status = '✅' if test_ctx else '❌'
+        except Exception as e:
+            load_time = time.time() - start
+            load_status = f'❌ Error: {str(e)[:50]}'
+
+        st.markdown("**Data Load Times:**")
+        st.metric("Ticker Data Load", f"{load_time:.2f}s", delta=load_status)
+
+        if load_time > 5:
+            st.warning("⚠️ Load times are high. Consider checking internet connectivity or yfinance API status.")
+
+    # Section 7: Raw Data Inspector
+    with st.expander("🔍 Raw Data Inspector", expanded=False):
+        st.markdown("**Inspect raw fundamental data:**")
+
+        ctx = initialize_data_and_context(ticker)
+
+        data_source = st.selectbox(
+            "Select data source to inspect:",
+            ["Company Info (dict)", "Annual Income Statement", "Annual Balance Sheet",
+             "Annual Cash Flow", "Quarterly Income Statement", "Quarterly Balance Sheet",
+             "Quarterly Cash Flow"],
+            key="data_inspector_fundamental"
+        )
+
+        if data_source == "Company Info (dict)":
+            if ctx and ctx.info:
+                # Display as formatted JSON
+                st.json(ctx.info)
+            else:
+                st.error("No company info available")
+
+        elif data_source == "Annual Income Statement":
+            if ctx and not ctx.income_data.empty:
+                display_dataframe_full_width(ctx.income_data)
+            else:
+                st.error("No annual income statement data available")
+
+        elif data_source == "Annual Balance Sheet":
+            if ctx and not ctx.balance_sheet_data.empty:
+                display_dataframe_full_width(ctx.balance_sheet_data)
+            else:
+                st.error("No annual balance sheet data available")
+
+        elif data_source == "Annual Cash Flow":
+            if ctx and not ctx.cash_flow_data.empty:
+                display_dataframe_full_width(ctx.cash_flow_data)
+            else:
+                st.error("No annual cash flow data available")
+
+        elif data_source == "Quarterly Income Statement":
+            if ctx and not ctx.quarterly_income_data.empty:
+                display_dataframe_full_width(ctx.quarterly_income_data)
+            else:
+                st.error("No quarterly income statement data available")
+
+        elif data_source == "Quarterly Balance Sheet":
+            if ctx and not ctx.quarterly_balance_sheet.empty:
+                display_dataframe_full_width(ctx.quarterly_balance_sheet)
+            else:
+                st.error("No quarterly balance sheet data available")
+
+        elif data_source == "Quarterly Cash Flow":
+            if ctx and not ctx.quarterly_cash_flow.empty:
+                display_dataframe_full_width(ctx.quarterly_cash_flow)
+            else:
+                st.error("No quarterly cash flow data available")
 
 
 if __name__ == "__main__":

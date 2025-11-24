@@ -9,7 +9,7 @@ import requests
 import json
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from ai_model_config import render_model_selector, display_provider_status
+from global_sidebar import render_global_sidebar, apply_theme_css
 
 # --- PAGE CONFIG ---
 st.set_page_config(
@@ -19,144 +19,11 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- THEME (Dark/Light Mode) ---
-# Function to get current theme
-def get_theme():
-    # Attempt to read theme from query parameters first
-    if 'theme' in st.query_params:
-        return st.query_params['theme']
-    # If not in query params, check session state
-    if 'theme' in st.session_state:
-        return st.session_state['theme']
-    # Default to light if not set anywhere
-    return "light"
-
-# Set theme based on initial load or user selection
-if 'theme' not in st.session_state:
-    st.session_state.theme = get_theme()
-
-# Toggle button
-if st.sidebar.button(f"Switch to {'Dark' if st.session_state.theme == 'light' else 'Light'} Theme"):
-    st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
-    st.query_params['theme'] = st.session_state.theme # Update URL
-    st.rerun() # Rerun to apply theme immediately
-
-# CSS for styling based on theme
-if st.session_state.theme == "dark":
-    dark_theme_css = """
-    <style>
-    :root {
-        --primary-color: #6C63FF; /* Purple-blue for highlights */
-        --background-color: #1a1a2e; /* Dark background */
-        --secondary-background-color: #16213e; /* Slightly lighter dark for components */
-        --text-color: #e0e0e0; /* Light gray text */
-        --border-color: #0f3460; /* Darker blue for borders */
-        --card-bg-color: #16213e;
-    }
-    body {
-        color: var(--text-color);
-        background-color: var(--background-color);
-    }
-    .stApp {
-        background-color: var(--background-color);
-    }
-    .stTextInput>div>div>input, .stSelectbox>div>div, .stDateInput>div>div>input {
-        background-color: var(--secondary-background-color);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-    }
-    .stMarkdown, .stText {
-        color: var(--text-color);
-    }
-    h1, h2, h3, h4, h5, h6 {
-        color: var(--primary-color);
-    }
-    .stMetric {
-        background-color: var(--card-bg-color);
-        border: 1px solid var(--border-color);
-        border-radius: 5px;
-        padding: 10px;
-    }
-    .stMetric label {
-        color: var(--text-color);
-    }
-    /* Sidebar adjustments for dark theme */
-    .st-emotion-cache-1pxazr-0 > div { /* Target the sidebar background */
-        background-color: #0f1626; /* Even darker sidebar */
-    }
-    /* Specific styling for the AI response box */
-    .ai-response-box {
-        background-color: #0f3460; /* Dark blue for AI box */
-        border-left: 5px solid #6C63FF; /* Highlight with primary color */
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 20px;
-        color: var(--text-color);
-    }
-    .ai-response-box p {
-        margin-bottom: 5px;
-    }
-    </style>
-    """
-    st.markdown(dark_theme_css, unsafe_allow_html=True)
-else:
-    light_theme_css = """
-    <style>
-    :root {
-        --primary-color: #6C63FF;
-        --background-color: #FFFFFF;
-        --secondary-background-color: #F0F2F6;
-        --text-color: #333333;
-        --border-color: #E0E0E0;
-        --card-bg-color: #FFFFFF;
-    }
-    body {
-        color: var(--text-color);
-        background-color: var(--background-color);
-    }
-    .stApp {
-        background-color: var(--background-color);
-    }
-    .stTextInput>div>div>input, .stSelectbox>div>div, .stDateInput>div>div>input {
-        background-color: var(--secondary-background-color);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-    }
-    .stMarkdown, .stText {
-        color: var(--text-color);
-    }
-    h1, h2, h3, h4, h5, h6 {
-        color: var(--primary-color);
-    }
-
-/* Metric Component - Desktop */
-[data-testid="stMetric"] {
-    background-color: #F8F9FA;
-    border: 1px solid #DDD;
-    border-radius: 5px;
-    padding: 10px;
-}
-
-/* --- Mobile-Specific Adjustments --- */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 1.8rem;
-    }
-    h2 {
-        font-size: 1.5rem;
-    }
-    /* Make metrics even more compact on mobile */
-    [data-testid="stMetric"] {
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-    [data-testid="stMetric"] label {
-        font-size: 0.9rem;
-    }
-}
- </style>
- """
-    st.markdown(light_theme_css, unsafe_allow_html=True)
+# ============================
+# GLOBAL SIDEBAR (Theme, AI Settings)
+# ============================
+sidebar_config = render_global_sidebar()
+apply_theme_css(sidebar_config['theme'])
 
 # --- GOOGLE AI CONFIG ---
 try:
@@ -207,37 +74,24 @@ st.sidebar.text_input(
 # should always refer to the value in st.session_state.ticker_input
 ticker = st.session_state.ticker_input
 
-# --- AI FEATURES TOGGLE ---
-st.sidebar.markdown("---")
-st.sidebar.markdown("### ⚙️ Settings")
-
-# Initialize AI toggle if not already in session state
-if 'enable_ai_features' not in st.session_state:
-    st.session_state.enable_ai_features = True
-
-st.session_state.enable_ai_features = st.sidebar.checkbox(
-    "Enable AI Features",
-    value=st.session_state.enable_ai_features,
-    help="Toggle AI-powered analysis (competitor analysis, chart insights). Disabling this can improve performance and reduce API costs."
-)
-
-# AI Model Selector (only show if AI features are enabled)
-if st.session_state.enable_ai_features:
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### 🤖 AI Configuration")
-
-    # Render model selector
-    selected_model = render_model_selector(
-        session_key="selected_ai_model",
-        label="AI Model:",
-        help_text="Choose which AI model to use for analysis",
-        show_cost=True,
-        show_details=True
-    )
-
-    # Show provider status
-    display_provider_status()
+# ============================
+# HOME PAGE CONTENT
+# ============================
 
 st.title(f"Stock Analysis Dashboard")
 st.subheader(f"Now analyzing: {ticker}")
+
+# Show AI configuration status
+if sidebar_config['enable_ai_features'] and sidebar_config['selected_ai_model']:
+    from ai_model_config import get_model_info
+    model_info = get_model_info(sidebar_config['selected_ai_model'])
+    if model_info:
+        st.success(f"AI Features Enabled - Using: {model_info.full_name}")
+    else:
+        st.success(f"AI Features Enabled - Using: {sidebar_config['selected_ai_model']}")
+elif sidebar_config['enable_ai_features']:
+    st.warning("AI Features enabled but no model selected or configured")
+else:
+    st.info("AI Features disabled - Enable in sidebar for AI-powered analysis")
+
 st.info("Select a page from the sidebar to begin your analysis.")

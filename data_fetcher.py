@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import timedelta
 from alpha_vantage.fundamentaldata import FundamentalData
 from error_logger import log_error, log_warning
+from mode_config import get_cache_ttl
 
 # Import fast batch fetcher for multi-ticker operations
 try:
@@ -16,7 +17,7 @@ except ImportError:
 # This function (get_stock_object) is generally useful for creating and caching
 # yfinance Ticker objects, which are then passed to other data fetching functions.
 # It's assumed to be part of the full data_fetcher.py file.
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=get_cache_ttl("slow"))
 def get_stock_object(ticker: str) -> yf.Ticker:
     """Creates and caches a yfinance Ticker object."""
     return yf.Ticker(ticker)
@@ -28,7 +29,7 @@ def get_ticker(ticker: str) -> yf.Ticker:
 
 # This function (get_company_info) is being modified/added to handle
 # invalid tickers by returning None, preventing redundant calls.
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=get_cache_ttl("medium"))
 def get_company_info(_stock: yf.Ticker):
     """
     Fetches general company information using yfinance.
@@ -71,15 +72,15 @@ def get_company_info(_stock: yf.Ticker):
         )
         return None
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=get_cache_ttl("slow"))
 def get_cash_flow(_stock: yf.Ticker):
     return _stock.quarterly_cash_flow
 
-@st.cache_data(ttl=1800)
+@st.cache_data(ttl=get_cache_ttl("fast"))
 def get_stock_news(_stock: yf.Ticker):
     return _stock.news
 
-@st.cache_data(ttl=86400)
+@st.cache_data(ttl=get_cache_ttl("slow"))
 def get_analyst_recommendations(_stock: yf.Ticker):
     """Fetches analyst recommendations."""
     try:
@@ -95,7 +96,7 @@ def get_analyst_recommendations(_stock: yf.Ticker):
     except Exception:
         return pd.DataFrame()
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=get_cache_ttl("slow"))
 def get_earnings_calendar(api_key):
     """Fetches the earnings calendar from Alpha Vantage."""
     try:
@@ -124,7 +125,7 @@ def get_earnings_calendar(api_key):
         st.info("Please ensure your `alpha_vantage` API key is in .streamlit/secrets.toml")
         return pd.DataFrame()
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=get_cache_ttl("medium"))
 def get_competitor_data(competitor_tickers, use_fast=True):
     """
     Fetches company information for a list of competitor tickers.
@@ -165,7 +166,7 @@ def get_competitor_data(competitor_tickers, use_fast=True):
     return all_info
 
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=get_cache_ttl("medium"))
 def get_eps_estimates_list(ticker: str) -> list:
     """
     Aggregate analyst EPS estimates from available providers.
@@ -313,7 +314,7 @@ def get_eps_estimates_list(ticker: str) -> list:
     return cleaned
 
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=get_cache_ttl("fast"))
 def get_stock_price_data(ticker: str, period: str = "2y"):
     """
     Fetches historical price data for a stock.
@@ -332,3 +333,210 @@ def get_stock_price_data(ticker: str, period: str = "2y"):
     except Exception as e:
         st.error(f"Failed to fetch price data for {ticker}: {e}")
         return pd.DataFrame()
+
+
+@st.cache_data(ttl=get_cache_ttl("fast"))
+def get_dividend_values(ticker: str) -> dict:
+    """Fetch dividend-related values from multiple configured providers.
+
+    Returns a mapping of source -> info dict with keys:
+        - dividendYield (as provided)
+        - dividendRate (as provided)
+        - computedYieldPct (float|None)  -- normalized percentage via app_utils.normalize_dividend_yield
+        - raw (any)  -- raw provider response / info snippet
+
+    The implementation tries (in priority): yfinance, yahooquery (fast_data_fetcher),
+    then external APIs (FINNHUB, FMP, POLYGON) if configured in st.secrets. The function is
+    deliberately defensive — failures from one provider don't block others.
+    """
+    from app_utils import normalize_dividend_yield
+
+    results = {}
+
+    # 1) yfinance
+    try:
+        stock = get_stock_object(ticker)
+        info = getattr(stock, 'info', {}) or {}
+
+        current_price = info.get('currentPrice') or info.get('regularMarketPrice')
+
+        div_yield_pct, src = normalize_dividend_yield(info, current_price)
+
+        results['yfinance'] = {
+            'dividendYield': info.get('dividendYield'),
+            'dividendRate': info.get('dividendRate'),
+            'computedYieldPct': div_yield_pct,
+            'source': src,
+            'raw': info
+        }
+    except Exception:
+        results['yfinance'] = {'error': 'failed_to_fetch'}
+
+    # 2) yahooquery (fast batch) if available
+    try:
+        if YAHOOQUERY_AVAILABLE:
+            from fast_data_fetcher import get_multiple_tickers_info
+
+            batch = get_multiple_tickers_info([ticker])
+            yinfo = batch.get(ticker, {})
+
+            # yahooquery uses slightly different keys in some cases
+            div_yield = yinfo.get('dividendYield')
+            div_rate = yinfo.get('dividendRate') or yinfo.get('lastDiv') or yinfo.get('trailingAnnualDividendRate')
+
+            # If currentPrice not provided, try quote keys
+            current_price = yinfo.get('regularMarketPrice') or yinfo.get('currentPrice')
+
+            div_yield_pct, src = normalize_dividend_yield({'dividendYield': div_yield, 'dividendRate': div_rate}, current_price)
+
+            results['yahooquery'] = {
+                'dividendYield': div_yield,
+                'dividendRate': div_rate,
+                'computedYieldPct': div_yield_pct,
+                'source': src,
+                'raw': yinfo
+            }
+    except Exception:
+        # Nonfatal — just skip
+        results['yahooquery'] = {'error': 'failed_to_fetch'}
+
+    # Generic provider fallbacks — attempt to pull numbers related to dividends from provider JSON
+    def _find_dividend_numbers_in_json(obj):
+        vals = []
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                kl = str(k).lower()
+                if 'divid' in kl or 'lastdiv' in kl or 'amount' in kl:
+                    try:
+                        if isinstance(v, (int, float)):
+                            vals.append(float(v))
+                        elif isinstance(v, str):
+                            vals.append(float(v))
+                    except Exception:
+                        pass
+                elif isinstance(v, (dict, list)):
+                    vals.extend(_find_dividend_numbers_in_json(v))
+        elif isinstance(obj, list):
+            for item in obj:
+                vals.extend(_find_dividend_numbers_in_json(item))
+        return vals
+
+    # 3) Finnhub
+    try:
+        if 'FINNHUB_API_KEY' in st.secrets:
+            key = st.secrets['FINNHUB_API_KEY']
+            url = f"https://finnhub.io/api/v1/stock/earnings?symbol={ticker}&token={key}"
+            # some endpoints expose 'amount' on dividend endpoints — be defensive
+            r = requests.get(url, timeout=6)
+            if r.ok:
+                data = r.json()
+                nums = _find_dividend_numbers_in_json(data)
+                # If we find a candidate 'amount' but not yield, attempt to compute using current price
+                selected = nums[0] if nums else None
+
+                current_price = None
+                try:
+                    stock = get_stock_object(ticker)
+                    current_price = stock.info.get('currentPrice') or stock.info.get('regularMarketPrice')
+                except Exception:
+                    pass
+
+                comp_pct = None
+                if selected and current_price:
+                    try:
+                        comp_pct = float(selected) / float(current_price) * 100.0
+                        comp_pct = comp_pct if comp_pct > 0 else None
+                    except Exception:
+                        comp_pct = None
+
+                results['finnhub'] = {
+                    'values_found': nums,
+                    'computedYieldPct': comp_pct,
+                    'raw': data
+                }
+    except Exception:
+        results['finnhub'] = {'error': 'failed_to_fetch'}
+
+    # 4) Financial Modeling Prep (FMP)
+    try:
+        if 'FMP_API_KEY' in st.secrets:
+            key = st.secrets['FMP_API_KEY']
+            url = f"https://financialmodelingprep.com/api/v3/quote/{ticker}?apikey={key}"
+            r = requests.get(url, timeout=6)
+            if r.ok:
+                data = r.json()
+                if isinstance(data, list) and len(data) > 0:
+                    record = data[0]
+                else:
+                    record = data
+
+                div_yield = record.get('dividendYield')
+                div_rate = record.get('lastDiv') or record.get('dividend')
+                current_price = record.get('price') or record.get('previousClose')
+
+                comp_pct, src = normalize_dividend_yield({'dividendYield': div_yield, 'dividendRate': div_rate}, current_price)
+
+                results['fmp'] = {
+                    'dividendYield': div_yield,
+                    'dividendRate': div_rate,
+                    'computedYieldPct': comp_pct,
+                    'source': src,
+                    'raw': record
+                }
+    except Exception:
+        results['fmp'] = {'error': 'failed_to_fetch'}
+
+    # 5) Polygon
+    try:
+        if 'POLYGON_API_KEY' in st.secrets:
+            key = st.secrets['POLYGON_API_KEY']
+            url = f"https://api.polygon.io/v3/reference/dividends?ticker={ticker}&apiKey={key}"
+            r = requests.get(url, timeout=6)
+            if r.ok:
+                data = r.json()
+                nums = _find_dividend_numbers_in_json(data)
+                results['polygon'] = {'values_found': nums, 'raw': data}
+    except Exception:
+        results['polygon'] = {'error': 'failed_to_fetch'}
+
+    return results
+
+
+def compare_dividend_values(dividend_map: dict, threshold_pct_points: float = 2.0) -> dict:
+    """Compare normalized yields between providers and flag mismatches.
+
+    Returns a dict: {'mismatch': bool, 'values': list_of_tuples(source, pct), 'min': x, 'max': y, 'delta': z}
+    where pct values are floats and delta is max-min. If insufficient data, mismatch=False.
+    """
+    candidates = []
+    for src, data in (dividend_map or {}).items():
+        if isinstance(data, dict):
+            pct = data.get('computedYieldPct')
+            # Some providers return numbers in 'values_found' — compute approximate yield if present
+            if pct is None and 'values_found' in data and data.get('values_found'):
+                # Use first value as amount and attempt to compute using yfinance if possible
+                try:
+                    first = data['values_found'][0]
+                    # find price from yfinance if available
+                    stock = get_stock_object(dividend_map.get('ticker', ''))
+                    price = stock.info.get('currentPrice') if hasattr(stock, 'info') else None
+                    if price:
+                        pct = float(first) / float(price) * 100.0
+                except Exception:
+                    pct = None
+
+            if pct is not None:
+                try:
+                    candidates.append((src, float(pct)))
+                except Exception:
+                    continue
+
+    if len(candidates) < 2:
+        return {'mismatch': False, 'values': candidates, 'min': None, 'max': None, 'delta': 0.0}
+
+    values = [v for _, v in candidates]
+    mini, maxi = min(values), max(values)
+    delta = maxi - mini
+    mismatch = delta > threshold_pct_points
+
+    return {'mismatch': mismatch, 'values': candidates, 'min': mini, 'max': maxi, 'delta': delta}

@@ -9,9 +9,341 @@ import numpy as np
 import yfinance as yf
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+from app_utils import plotly_full_width
+from mode_config import get_cache_ttl
 
 
-@st.cache_data(ttl=1800)  # Cache for 30 minutes
+# ===== STRATEGY PRESET CONFIGURATION =====
+STRATEGY_PRESETS = {
+    'clean_chart': {
+        'name': 'Clean Chart',
+        'emoji': '📊',
+        'category': 'SPECIALIZED STRATEGIES',
+        'description': 'Minimal view with just volume bars - pure price action',
+        'best_for': 'Price action traders who prefer clean charts without indicator clutter',
+        'timeframe': 'Any',
+        'complexity': 'Beginner',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': False, 'sma50': False, 'sma100': False, 'sma200': False,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': False, 'ema26': False, 'ema50': False,
+            'bb': False, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
+            'rsi': False, 'stoch': False, 'willr': False, 'macd': False, 'adx': False, 'cci': False, 'obv': False, 'mfi': False
+        },
+        'tutorial': {
+            'what': 'A minimal chart showing only price candles and volume bars.',
+            'why': 'Removes all indicator noise to focus purely on price action, support/resistance levels, and candlestick patterns.',
+            'when': 'Use when you want to analyze raw price movements, identify chart patterns, or avoid over-reliance on indicators.'
+        }
+    },
+    'scalping': {
+        'name': 'Scalping',
+        'emoji': '⚡',
+        'category': 'SHORT-TERM TRADING',
+        'description': 'Ultra short-term trades (seconds to minutes) - lightning fast',
+        'best_for': 'High-frequency traders seeking quick profits on small price movements',
+        'timeframe': '1m - 5m',
+        'complexity': 'Advanced',
+        'indicators': {
+            'sma5': True, 'sma10': True, 'sma20': False, 'sma50': False, 'sma100': False, 'sma200': False,
+            'ema5': True, 'ema10': True, 'ema12': True, 'ema20': False, 'ema26': False, 'ema50': False,
+            'bb': True, 'ichi': False, 'psar': True, 'vwap': True, 'vol': True, 'vol_sma': True,
+            'rsi': True, 'stoch': True, 'willr': False, 'macd': False, 'adx': False, 'cci': True, 'obv': False, 'mfi': True
+        },
+        'tutorial': {
+            'what': 'Rapid-fire trading setup with fast EMAs (5,10,12), Bollinger Bands, PSAR, VWAP, RSI, Stochastic, CCI, and MFI.',
+            'why': 'Fast indicators respond quickly to price changes. VWAP provides institutional reference. Volume and money flow confirm liquidity for quick entries/exits.',
+            'when': 'Use in high-liquidity assets during market hours. Requires tight stop-losses and quick decision-making.'
+        }
+    },
+    'day_trading': {
+        'name': 'Day Trading',
+        'emoji': '🏃',
+        'category': 'SHORT-TERM TRADING',
+        'description': 'Intraday trades closed before market close',
+        'best_for': 'Active traders monitoring positions throughout the day',
+        'timeframe': '5m - 1h',
+        'complexity': 'Intermediate',
+        'indicators': {
+            'sma5': True, 'sma10': True, 'sma20': True, 'sma50': False, 'sma100': False, 'sma200': False,
+            'ema5': True, 'ema10': True, 'ema12': True, 'ema20': False, 'ema26': True, 'ema50': False,
+            'bb': True, 'ichi': False, 'psar': True, 'vwap': True, 'vol': True, 'vol_sma': True,
+            'rsi': True, 'stoch': True, 'willr': False, 'macd': True, 'adx': False, 'cci': False, 'obv': False, 'mfi': True
+        },
+        'tutorial': {
+            'what': 'Balanced setup with short-term MAs (5,10,20), PSAR, VWAP, MACD, RSI, Stochastic, and MFI.',
+            'why': 'Combines trend indicators (MAs, PSAR) with momentum (RSI, Stoch, MACD) for intraday opportunities. VWAP shows institutional pricing.',
+            'when': 'Use when actively monitoring charts. Best for liquid stocks with clear intraday trends.'
+        }
+    },
+    'swing_trading': {
+        'name': 'Swing Trading',
+        'emoji': '🎯',
+        'category': 'MEDIUM-TERM TRADING',
+        'description': 'Multi-day to multi-week position holds',
+        'best_for': 'Part-time traders capturing medium-term trends',
+        'timeframe': '1h - Daily',
+        'complexity': 'Intermediate',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': True, 'sma50': True, 'sma100': True, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': True, 'ema26': False, 'ema50': True,
+            'bb': True, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
+            'rsi': True, 'stoch': False, 'willr': False, 'macd': True, 'adx': True, 'cci': False, 'obv': True, 'mfi': False
+        },
+        'tutorial': {
+            'what': 'Medium-term MAs (20,50,100,200), EMA(20,50), BB, MACD, RSI, ADX, and OBV.',
+            'why': 'Identifies multi-day trends using longer MAs and ADX. MACD/RSI time entries within the trend.',
+            'when': 'Use for holding 3-10 days. Works best when market has clear directional trends.'
+        }
+    },
+    'trend_following': {
+        'name': 'Trend Following',
+        'emoji': '📈',
+        'category': 'MEDIUM-TERM TRADING',
+        'description': 'Ride established trends until they reverse',
+        'best_for': 'Traders who profit from sustained directional moves',
+        'timeframe': 'Daily - Weekly',
+        'complexity': 'Intermediate',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': True, 'sma50': True, 'sma100': False, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': False, 'ema26': False, 'ema50': False,
+            'bb': True, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
+            'rsi': False, 'stoch': False, 'willr': False, 'macd': True, 'adx': True, 'cci': False, 'obv': False, 'mfi': False
+        },
+        'tutorial': {
+            'what': 'Core trend indicators: SMA(20,50,200), Bollinger Bands, MACD, and ADX.',
+            'why': 'ADX confirms trend strength. MAs define trend direction. MACD signals entries/exits within the trend.',
+            'when': 'Use when ADX > 25 (strong trend). Stay in trades until MAs cross or ADX weakens.'
+        }
+    },
+    'breakout_trading': {
+        'name': 'Breakout Trading',
+        'emoji': '🔄',
+        'category': 'MEDIUM-TERM TRADING',
+        'description': 'Enter positions as price breaks key levels',
+        'best_for': 'Traders who capitalize on volatility expansion and range breakouts',
+        'timeframe': '1h - Daily',
+        'complexity': 'Advanced',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': True, 'sma50': True, 'sma100': False, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': True, 'ema26': False, 'ema50': False,
+            'bb': True, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': True,
+            'rsi': True, 'stoch': False, 'willr': False, 'macd': False, 'adx': False, 'cci': True, 'obv': True, 'mfi': False
+        },
+        'tutorial': {
+            'what': 'Volatility indicators (BB), key MAs (20,50,200), volume analysis, and momentum (RSI, CCI, OBV).',
+            'why': 'BB identifies squeeze periods before breakouts. Volume confirms breakout validity. RSI/CCI show momentum.',
+            'when': 'Use when price consolidates near resistance/support. Wait for volume surge confirming the breakout.'
+        }
+    },
+    'deep_value': {
+        'name': 'Deep Value',
+        'emoji': '💎',
+        'category': 'LONG-TERM INVESTING',
+        'description': 'Long-term fundamentally undervalued positions',
+        'best_for': 'Patient investors seeking undervalued assets for multi-month holds',
+        'timeframe': 'Daily - Monthly',
+        'complexity': 'Beginner',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': False, 'sma50': True, 'sma100': True, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': False, 'ema26': False, 'ema50': True,
+            'bb': False, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
+            'rsi': True, 'stoch': False, 'willr': False, 'macd': False, 'adx': False, 'cci': False, 'obv': True, 'mfi': False
+        },
+        'tutorial': {
+            'what': 'Long-term MAs (50,100,200), EMA(50), RSI for oversold conditions, and OBV for accumulation.',
+            'why': 'MAs identify long-term support levels. RSI < 30 flags oversold conditions. OBV shows smart money accumulation.',
+            'when': 'Use for fundamentally strong stocks trading below intrinsic value. Buy when RSI oversold near key MA support.'
+        }
+    },
+    'position_trading': {
+        'name': 'Position Trading',
+        'emoji': '📊',
+        'category': 'LONG-TERM INVESTING',
+        'description': 'Multi-month positions based on major trends',
+        'best_for': 'Long-term traders holding through market noise',
+        'timeframe': 'Weekly - Monthly',
+        'complexity': 'Beginner',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': False, 'sma50': True, 'sma100': True, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': False, 'ema26': False, 'ema50': True,
+            'bb': False, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
+            'rsi': False, 'stoch': False, 'willr': False, 'macd': True, 'adx': True, 'cci': False, 'obv': True, 'mfi': False
+        },
+        'tutorial': {
+            'what': 'Major MAs (50,100,200), MACD for long-term momentum, ADX for trend strength, OBV for volume analysis.',
+            'why': 'Focuses on macro trends ignoring short-term volatility. MAs define trend, MACD times entries, ADX confirms strength.',
+            'when': 'Use for 3-12 month holds. Enter when price above SMA200 with rising OBV and ADX > 25.'
+        }
+    },
+    'income_dividend': {
+        'name': 'Income/Dividend',
+        'emoji': '💰',
+        'category': 'LONG-TERM INVESTING',
+        'description': 'Buy quality dividend stocks at attractive prices',
+        'best_for': 'Income-focused investors seeking yield with capital preservation',
+        'timeframe': 'Daily - Monthly',
+        'complexity': 'Beginner',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': False, 'sma50': True, 'sma100': True, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': False, 'ema26': False, 'ema50': False,
+            'bb': True, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
+            'rsi': True, 'stoch': False, 'willr': False, 'macd': False, 'adx': False, 'cci': False, 'obv': False, 'mfi': False
+        },
+        'tutorial': {
+            'what': 'Key MAs (50,100,200), Bollinger Bands for value zones, and RSI for entry timing.',
+            'why': 'Buy dividend stocks at attractive prices (lower BB band, RSI < 40) near MA support for better yield.',
+            'when': 'Use for dividend aristocrats/kings. Buy when price pulls back to SMA50/100 with RSI showing oversold.'
+        }
+    },
+    'momentum_trading': {
+        'name': 'Momentum Trading',
+        'emoji': '📉',
+        'category': 'SHORT-TERM TRADING',
+        'description': 'Follow strong price momentum and relative strength',
+        'best_for': 'Aggressive traders chasing high-momentum moves',
+        'timeframe': '15m - 1h',
+        'complexity': 'Advanced',
+        'indicators': {
+            'sma5': True, 'sma10': True, 'sma20': True, 'sma50': False, 'sma100': False, 'sma200': False,
+            'ema5': True, 'ema10': True, 'ema12': True, 'ema20': True, 'ema26': False, 'ema50': False,
+            'bb': False, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': True,
+            'rsi': True, 'stoch': True, 'willr': True, 'macd': True, 'adx': True, 'cci': True, 'obv': False, 'mfi': True
+        },
+        'tutorial': {
+            'what': 'Fast MAs, all momentum oscillators (RSI, Stoch, Williams %R, CCI, MFI), MACD, ADX, and volume.',
+            'why': 'Identifies and rides explosive momentum. Multiple oscillators confirm strength. ADX validates trend power.',
+            'when': 'Use when ADX > 30, RSI > 60, and price above all EMAs. Exit when momentum oscillators diverge.'
+        }
+    },
+    'options_trading': {
+        'name': 'Options Trading',
+        'emoji': '🎲',
+        'category': 'SPECIALIZED STRATEGIES',
+        'description': 'Volatility and directional bias for options strategies',
+        'best_for': 'Options traders needing IV, support/resistance, and trend analysis',
+        'timeframe': '1h - Daily',
+        'complexity': 'Advanced',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': True, 'sma50': True, 'sma100': False, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': True, 'ema26': False, 'ema50': False,
+            'bb': True, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': True,
+            'rsi': True, 'stoch': True, 'willr': False, 'macd': True, 'adx': False, 'cci': False, 'obv': False, 'mfi': False
+        },
+        'tutorial': {
+            'what': 'Volatility indicators (BB width), key MAs (20,50,200), RSI, Stochastic, MACD, and volume.',
+            'why': 'BB width indicates IV changes (sell premium when wide, buy when narrow). MAs define support/resistance for strikes.',
+            'when': 'Use for options strategies: sell premium at BB extremes, buy directional when BB squeezes with rising volume.'
+        }
+    },
+    'institutional': {
+        'name': 'Institutional',
+        'emoji': '🏦',
+        'category': 'SPECIALIZED STRATEGIES',
+        'description': 'Hedge fund / institutional-grade multi-timeframe analysis',
+        'best_for': 'Professional traders using comprehensive technical analysis',
+        'timeframe': '1h - Weekly',
+        'complexity': 'Expert',
+        'indicators': {
+            'sma5': False, 'sma10': True, 'sma20': True, 'sma50': True, 'sma100': True, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': True, 'ema20': True, 'ema26': True, 'ema50': True,
+            'bb': True, 'ichi': True, 'psar': False, 'vol': True, 'vol_sma': True,
+            'rsi': True, 'stoch': True, 'willr': False, 'macd': True, 'adx': True, 'cci': True, 'obv': True, 'mfi': True
+        },
+        'tutorial': {
+            'what': 'Comprehensive setup: All major MAs, Ichimoku Cloud, BB, full oscillator suite (RSI, Stoch, MACD, ADX, CCI), volume analysis.',
+            'why': 'Multi-timeframe confluence analysis. Ichimoku for trend/momentum, MAs for structure, oscillators for timing.',
+            'when': 'Use for thorough analysis before large positions. Wait for alignment across indicators and timeframes.'
+        }
+    },
+    'mean_reversion': {
+        'name': 'Mean Reversion',
+        'emoji': '⚖️',
+        'category': 'SPECIALIZED STRATEGIES',
+        'description': 'Buy oversold, sell overbought - price returns to mean',
+        'best_for': 'Counter-trend traders in ranging markets',
+        'timeframe': '1h - Daily',
+        'complexity': 'Intermediate',
+        'indicators': {
+            'sma5': False, 'sma10': False, 'sma20': True, 'sma50': True, 'sma100': False, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': False, 'ema20': True, 'ema26': False, 'ema50': False,
+            'bb': True, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
+            'rsi': True, 'stoch': True, 'willr': True, 'macd': False, 'adx': False, 'cci': True, 'obv': False, 'mfi': True
+        },
+        'tutorial': {
+            'what': 'Mean indicators (SMA20,50,200, BB), extreme oscillators (RSI, Stoch, Williams %R, CCI, MFI).',
+            'why': 'BB identifies overbought/oversold extremes. Multiple oscillators confirm mean reversion setup. MAs define the mean.',
+            'when': 'Use in range-bound markets (ADX < 20). Buy at lower BB with RSI < 30. Sell at upper BB with RSI > 70.'
+        }
+    },
+    'crypto_volatile': {
+        'name': 'Crypto/Volatile Assets',
+        'emoji': '🌐',
+        'category': 'SPECIALIZED STRATEGIES',
+        'description': 'High volatility assets - crypto, penny stocks, meme stocks',
+        'best_for': 'Traders in highly volatile, 24/7 markets like crypto',
+        'timeframe': '15m - 4h',
+        'complexity': 'Advanced',
+        'indicators': {
+            'sma5': True, 'sma10': True, 'sma20': True, 'sma50': True, 'sma100': False, 'sma200': False,
+            'ema5': True, 'ema10': True, 'ema12': True, 'ema20': True, 'ema26': True, 'ema50': True,
+            'bb': True, 'ichi': False, 'psar': True, 'vol': True, 'vol_sma': True,
+            'rsi': True, 'stoch': True, 'willr': True, 'macd': True, 'adx': False, 'cci': True, 'obv': True, 'mfi': True
+        },
+        'tutorial': {
+            'what': 'Fast-reacting setup: Short/medium EMAs, BB, PSAR, all momentum indicators, heavy volume analysis.',
+            'why': 'High volatility requires responsive indicators. Multiple confirmations reduce false signals in choppy action.',
+            'when': 'Use for crypto, penny stocks, or meme stocks. Tighten stops due to volatility. Confirm moves with volume spikes.'
+        }
+    },
+    'full_analysis': {
+        'name': 'Full Analysis',
+        'emoji': '🌊',
+        'category': 'SPECIALIZED STRATEGIES',
+        'description': 'Everything enabled - comprehensive technical overview',
+        'best_for': 'Deep-dive analysis when you need to see every indicator',
+        'timeframe': 'Any',
+        'complexity': 'Expert',
+        'indicators': {
+            'sma5': False, 'sma10': True, 'sma20': True, 'sma50': True, 'sma100': True, 'sma200': True,
+            'ema5': False, 'ema10': False, 'ema12': True, 'ema20': True, 'ema26': True, 'ema50': True,
+            'bb': True, 'ichi': True, 'psar': True, 'vol': True, 'vol_sma': True,
+            'rsi': True, 'stoch': True, 'willr': True, 'macd': True, 'adx': True, 'cci': True, 'obv': True, 'mfi': True
+        },
+        'tutorial': {
+            'what': 'All available indicators enabled for maximum information density.',
+            'why': 'Comprehensive view for educational purposes or when performing thorough multi-indicator analysis.',
+            'when': 'Use for learning, backtesting strategies, or when you need complete technical picture. Can be overwhelming for beginners.'
+        }
+    }
+}
+
+
+def apply_preset(preset_key):
+    """Apply a preset configuration to session state"""
+    if preset_key in STRATEGY_PRESETS:
+        preset = STRATEGY_PRESETS[preset_key]
+        st.session_state.update(preset['indicators'])
+        st.session_state['active_preset'] = preset_key
+        return True
+    return False
+
+
+def get_preset_categories():
+    """Get presets organized by category"""
+    categories = {}
+    for key, preset in STRATEGY_PRESETS.items():
+        category = preset['category']
+        if category not in categories:
+            categories[category] = []
+        categories[category].append({
+            'key': key,
+            'display': f"{preset['emoji']} {preset['name']}",
+            **preset
+        })
+    return categories
+
+
+@st.cache_data(ttl=get_cache_ttl("medium"))
 def calculate_all_indicators(df):
     """Calculate ALL technical indicators"""
 
@@ -124,13 +456,24 @@ def calculate_all_indicators(df):
     # Volume SMA
     df['Volume_SMA'] = df['Volume'].rolling(window=20).mean()
 
+    # VWAP - Volume-Weighted Average Price (critical for institutional trading)
+    # VWAP resets daily in production, but for historical analysis we'll use cumulative
+    # For intraday data, this should reset at market open each day
+    df['VWAP'] = (df['Volume'] * (df['High'] + df['Low'] + df['Close']) / 3).cumsum() / df['Volume'].cumsum()
+
+    # Volume color coding (for visualization)
+    df['Volume_Color'] = df['Close'] >= df['Open']  # True = green (up), False = red (down)
+
+    # Volume spike detection (volume > 2x the 20-day average)
+    df['Volume_Spike'] = df['Volume'] > (df['Volume_SMA'] * 2)
+
     # Detect MACD Divergences
     df = _detect_macd_divergence(df, lookback=14)
 
     return df
 
 
-@st.cache_data(ttl=1800)  # Cache for 30 minutes
+@st.cache_data(ttl=get_cache_ttl("medium"))
 def _detect_chart_patterns(df):
     """
     Detect all major chart patterns in the price data
@@ -522,14 +865,14 @@ def render_advanced_chart(ticker, price_data):
         if 'chart_period' not in st.session_state:
             st.session_state.chart_period = "6M"
 
-        if t1.button("1D", use_container_width=True): st.session_state.chart_period = "1D"
-        if t2.button("5D", use_container_width=True): st.session_state.chart_period = "5D"
-        if t3.button("1M", use_container_width=True): st.session_state.chart_period = "1M"
-        if t4.button("3M", use_container_width=True): st.session_state.chart_period = "3M"
-        if t5.button("6M", use_container_width=True): st.session_state.chart_period = "6M"
-        if t6.button("1Y", use_container_width=True): st.session_state.chart_period = "1Y"
-        if t7.button("5Y", use_container_width=True): st.session_state.chart_period = "5Y"
-        if t8.button("Max", use_container_width=True): st.session_state.chart_period = "Max"
+        if t1.button("1D"): st.session_state.chart_period = "1D"
+        if t2.button("5D"): st.session_state.chart_period = "5D"
+        if t3.button("1M"): st.session_state.chart_period = "1M"
+        if t4.button("3M"): st.session_state.chart_period = "3M"
+        if t5.button("6M"): st.session_state.chart_period = "6M"
+        if t6.button("1Y"): st.session_state.chart_period = "1Y"
+        if t7.button("5Y"): st.session_state.chart_period = "5Y"
+        if t8.button("Max"): st.session_state.chart_period = "Max"
 
     # Filter data by period
     period_map = {"1D": 1, "5D": 5, "1M": 22, "3M": 66, "6M": 126, "1Y": 252, "5Y": 1260, "Max": None}
@@ -541,54 +884,116 @@ def render_advanced_chart(ticker, price_data):
 
     # ===== PROFESSIONAL TOOLBAR LAYOUT =====
 
-    # Indicator Presets
+    # Enhanced Indicator Presets
     st.markdown("### 🎯 Quick Indicator Presets")
-    preset_col1, preset_col2, preset_col3, preset_col4, preset_col5 = st.columns(5)
 
-    with preset_col1:
-        if st.button("📊 Clean Chart", use_container_width=True):
-            st.session_state.update({
-                'sma5': False, 'sma10': False, 'sma20': False, 'sma50': False, 'sma100': False, 'sma200': False,
-                'ema5': False, 'ema10': False, 'ema12': False, 'ema20': False, 'ema26': False, 'ema50': False,
-                'bb': False, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
-                'rsi': False, 'stoch': False, 'willr': False, 'macd': False, 'adx': False, 'cci': False, 'obv': False, 'mfi': False
-            })
+    # Get organized presets
+    preset_categories = get_preset_categories()
 
-    with preset_col2:
-        if st.button("📈 Trend Following", use_container_width=True):
-            st.session_state.update({
-                'sma5': False, 'sma10': False, 'sma20': True, 'sma50': True, 'sma100': False, 'sma200': True,
-                'ema5': False, 'ema10': False, 'ema12': False, 'ema20': False, 'ema26': False, 'ema50': False,
-                'bb': True, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
-                'rsi': False, 'stoch': False, 'willr': False, 'macd': True, 'adx': True, 'cci': False, 'obv': False, 'mfi': False
-            })
+    # Create categorized options for selectbox
+    preset_options = []
+    preset_keys_map = {}  # Map display string to preset key
 
-    with preset_col3:
-        if st.button("⚡ Day Trading", use_container_width=True):
-            st.session_state.update({
-                'sma5': True, 'sma10': True, 'sma20': True, 'sma50': False, 'sma100': False, 'sma200': False,
-                'ema5': True, 'ema10': True, 'ema12': True, 'ema20': False, 'ema26': True, 'ema50': False,
-                'bb': True, 'ichi': False, 'psar': True, 'vol': True, 'vol_sma': True,
-                'rsi': True, 'stoch': True, 'willr': False, 'macd': True, 'adx': False, 'cci': False, 'obv': False, 'mfi': True
-            })
+    category_order = [
+        'SHORT-TERM TRADING',
+        'MEDIUM-TERM TRADING',
+        'LONG-TERM INVESTING',
+        'SPECIALIZED STRATEGIES'
+    ]
 
-    with preset_col4:
-        if st.button("🎯 Swing Trading", use_container_width=True):
-            st.session_state.update({
-                'sma5': False, 'sma10': False, 'sma20': True, 'sma50': True, 'sma100': True, 'sma200': True,
-                'ema5': False, 'ema10': False, 'ema12': False, 'ema20': True, 'ema26': False, 'ema50': True,
-                'bb': True, 'ichi': False, 'psar': False, 'vol': True, 'vol_sma': False,
-                'rsi': True, 'stoch': False, 'willr': False, 'macd': True, 'adx': True, 'cci': False, 'obv': True, 'mfi': False
-            })
+    for category in category_order:
+        if category in preset_categories:
+            preset_options.append(f"━━━ {category} ━━━")
+            preset_keys_map[f"━━━ {category} ━━━"] = None  # Header, not selectable
 
-    with preset_col5:
-        if st.button("🌊 Full Analysis", use_container_width=True):
-            st.session_state.update({
-                'sma5': False, 'sma10': True, 'sma20': True, 'sma50': True, 'sma100': True, 'sma200': True,
-                'ema5': False, 'ema10': False, 'ema12': True, 'ema20': True, 'ema26': True, 'ema50': True,
-                'bb': True, 'ichi': True, 'psar': True, 'vol': True, 'vol_sma': True,
-                'rsi': True, 'stoch': True, 'willr': True, 'macd': True, 'adx': True, 'cci': True, 'obv': True, 'mfi': True
-            })
+            for preset in preset_categories[category]:
+                display_text = preset['display']
+                preset_options.append(f"  {display_text}")
+                preset_keys_map[f"  {display_text}"] = preset['key']
+
+    # Layout: Dropdown + Info Button + Active Badge
+    preset_ui_col1, preset_ui_col2, preset_ui_col3 = st.columns([3, 1, 2])
+
+    with preset_ui_col1:
+        # Initialize session state for selected preset display
+        if 'preset_selection_display' not in st.session_state:
+            st.session_state.preset_selection_display = "  🎯 Swing Trading"
+
+        selected_display = st.selectbox(
+            "Select Trading Strategy:",
+            options=preset_options,
+            index=preset_options.index(st.session_state.preset_selection_display) if st.session_state.preset_selection_display in preset_options else 0,
+            key="preset_selector",
+            label_visibility="collapsed"
+        )
+
+        # Apply preset if selection changed and it's not a category header
+        selected_key = preset_keys_map.get(selected_display)
+        if selected_key:
+            # Check if this is a new selection
+            if st.session_state.get('active_preset') != selected_key:
+                apply_preset(selected_key)
+                st.session_state.preset_selection_display = selected_display
+                st.rerun()
+
+    with preset_ui_col2:
+        # Inline help button with popover
+        with st.popover("ℹ️ Help"):
+            active_preset_key = st.session_state.get('active_preset', 'swing_trading')
+            if active_preset_key in STRATEGY_PRESETS:
+                preset_info = STRATEGY_PRESETS[active_preset_key]
+                st.markdown(f"### {preset_info['emoji']} {preset_info['name']}")
+                st.markdown(f"**Description:** {preset_info['description']}")
+                st.markdown(f"**Best For:** {preset_info['best_for']}")
+                st.markdown(f"**Timeframe:** {preset_info['timeframe']}")
+                st.markdown(f"**Complexity:** {preset_info['complexity']}")
+
+                st.markdown("---")
+                st.markdown("#### 📚 Tutorial")
+                st.markdown(f"**What:** {preset_info['tutorial']['what']}")
+                st.markdown(f"**Why:** {preset_info['tutorial']['why']}")
+                st.markdown(f"**When:** {preset_info['tutorial']['when']}")
+
+    with preset_ui_col3:
+        # Active preset indicator badge
+        active_preset_key = st.session_state.get('active_preset', 'swing_trading')
+        if active_preset_key in STRATEGY_PRESETS:
+            active_preset = STRATEGY_PRESETS[active_preset_key]
+            st.markdown(
+                f"""<div style='background-color: #4CAF50; color: white; padding: 8px 12px;
+                border-radius: 5px; text-align: center; font-weight: bold; margin-top: 0px;'>
+                ✓ Active: {active_preset['emoji']} {active_preset['name']}
+                </div>""",
+                unsafe_allow_html=True
+            )
+
+    st.markdown("---")
+
+    # Preset Comparison View (expandable)
+    with st.expander("📊 **COMPARE ALL STRATEGIES** - View side-by-side strategy comparison", expanded=False):
+        st.markdown("**Compare all 15 trading strategies to find the best fit for your style:**")
+
+        # Build comparison dataframe
+        comparison_data = []
+        for key in ['scalping', 'day_trading', 'momentum_trading', 'swing_trading',
+                    'trend_following', 'breakout_trading', 'deep_value', 'position_trading',
+                    'income_dividend', 'options_trading', 'institutional', 'mean_reversion',
+                    'crypto_volatile', 'full_analysis', 'clean_chart']:
+            if key in STRATEGY_PRESETS:
+                preset = STRATEGY_PRESETS[key]
+                comparison_data.append({
+                    'Strategy': f"{preset['emoji']} {preset['name']}",
+                    'Category': preset['category'],
+                    'Timeframe': preset['timeframe'],
+                    'Complexity': preset['complexity'],
+                    'Best For': preset['best_for']
+                })
+
+        comparison_df = pd.DataFrame(comparison_data)
+        from app_utils import display_dataframe_full_width
+        display_dataframe_full_width(comparison_df, hide_index=True)
+
+        st.markdown("**💡 Tip:** Click the ℹ️ Help button above after selecting a strategy to see detailed tutorial and indicator configuration.")
 
     st.markdown("---")
 
@@ -648,6 +1053,8 @@ def render_advanced_chart(ticker, price_data):
             show_bb = st.checkbox("Bollinger Bands", value=st.session_state.get('bb', False), key="bb")
             show_ichimoku = st.checkbox("Ichimoku Cloud", value=st.session_state.get('ichi', False), key="ichi")
             show_psar = st.checkbox("Parabolic SAR", value=st.session_state.get('psar', False), key="psar")
+            show_vwap = st.checkbox("VWAP (Institutional)", value=st.session_state.get('vwap', False), key="vwap",
+                                   help="Volume-Weighted Average Price - institutional benchmark for 'fair value'")
             st.markdown("**📊 Volume**")
             show_volume = st.checkbox("Volume Bars", value=st.session_state.get('vol', True), key="vol")
             show_volume_sma = st.checkbox("Volume SMA", value=st.session_state.get('vol_sma', False), key="vol_sma")
@@ -689,7 +1096,7 @@ def render_advanced_chart(ticker, price_data):
         )
 
     with pattern_col2:
-        if st.button("❓ What are Chart Patterns?", use_container_width=True):
+        if st.button("❓ What are Chart Patterns?"):
             st.session_state['show_pattern_tutorial'] = not st.session_state.get('show_pattern_tutorial', False)
 
     # Tutorial expander (shown when button clicked)
@@ -764,6 +1171,61 @@ def render_advanced_chart(ticker, price_data):
     for osc in oscillators_to_show:
         num_rows += 1
         row_map[osc] = num_rows
+
+    # ===== TECHNICAL SUMMARY (MOVED TO TOP) =====
+    st.markdown("---")
+    st.markdown("### 📊 Technical Summary")
+    sum_col1, sum_col2, sum_col3, sum_col4 = st.columns(4)
+
+    latest = chart_data.iloc[-1]
+
+    with sum_col1:
+        st.metric("Close", f"${latest['Close']:.2f}")
+        if 'SMA50' in chart_data.columns:
+            sma50_val = latest['SMA50']
+            st.metric("SMA50", f"${sma50_val:.2f}",
+                     f"{((latest['Close'] / sma50_val - 1) * 100):.2f}%" if sma50_val > 0 else "N/A")
+
+    with sum_col2:
+        if 'RSI' in chart_data.columns:
+            rsi_val = latest['RSI']
+            rsi_signal = "🔴 Overbought" if rsi_val > 70 else "🟢 Oversold" if rsi_val < 30 else "⚪ Neutral"
+            st.metric("RSI", f"{rsi_val:.1f}", rsi_signal)
+
+    with sum_col3:
+        if 'MACD' in chart_data.columns:
+            macd_val = latest['MACD']
+            signal_val = latest['MACD_Signal']
+
+            # Check for recent crossovers and divergences
+            recent_data = chart_data.tail(5)  # Last 5 periods
+            has_bullish_cross = recent_data['MACD_Bullish_Cross'].any()
+            has_bearish_cross = recent_data['MACD_Bearish_Cross'].any()
+            has_bullish_div = recent_data['MACD_Bullish_Div'].any()
+            has_bearish_div = recent_data['MACD_Bearish_Div'].any()
+
+            if has_bullish_div:
+                macd_signal = "⭐ Bullish Divergence"
+            elif has_bearish_div:
+                macd_signal = "⭐ Bearish Divergence"
+            elif has_bullish_cross:
+                macd_signal = "🟢 Bullish Cross"
+            elif has_bearish_cross:
+                macd_signal = "🔴 Bearish Cross"
+            elif macd_val > signal_val:
+                macd_signal = "🟢 Bullish"
+            else:
+                macd_signal = "🔴 Bearish"
+
+            st.metric("MACD", f"{macd_val:.2f}", macd_signal)
+
+    with sum_col4:
+        if 'ADX' in chart_data.columns:
+            adx_val = latest['ADX']
+            adx_signal = "💪 Strong Trend" if adx_val > 25 else "📊 Weak Trend"
+            st.metric("ADX", f"{adx_val:.1f}", adx_signal)
+
+    st.markdown("---")
 
     # Calculate row heights dynamically
     if num_rows == 1:
@@ -887,16 +1349,48 @@ def render_advanced_chart(ticker, price_data):
     if show_psar:
         fig.add_trace(go.Scatter(x=chart_data.index, y=chart_data['PSAR'], name='PSAR', mode='markers', marker=dict(size=2, color='purple')), row=1, col=1)
 
-    # Add Volume
+    # Add VWAP - Volume-Weighted Average Price (institutional benchmark)
+    if show_vwap:
+        fig.add_trace(go.Scatter(
+            x=chart_data.index,
+            y=chart_data['VWAP'],
+            name='VWAP',
+            line=dict(color='#FFA726', width=2, dash='dot'),
+            hovertemplate='VWAP: $%{y:.2f}<extra></extra>'
+        ), row=1, col=1)
+
+    # Add Volume with enhanced coloring
     if show_volume and "volume" in row_map:
-        colors = ['#ef5350' if chart_data['Close'].iloc[i] < chart_data['Open'].iloc[i] else '#26a69a'
-                  for i in range(len(chart_data))]
-        fig.add_trace(go.Bar(x=chart_data.index, y=chart_data['Volume'], name='Volume', marker_color=colors, showlegend=False),
-                      row=row_map["volume"], col=1)
+        # Color-code volume bars: red (down day), green (up day), yellow (high volume spike)
+        colors = []
+        for i in range(len(chart_data)):
+            if chart_data['Volume_Spike'].iloc[i]:
+                # High volume spike - bright yellow for attention
+                colors.append('#FFD700')
+            elif chart_data['Close'].iloc[i] < chart_data['Open'].iloc[i]:
+                # Down day - red
+                colors.append('#ef5350')
+            else:
+                # Up day - green
+                colors.append('#26a69a')
+
+        fig.add_trace(go.Bar(
+            x=chart_data.index,
+            y=chart_data['Volume'],
+            name='Volume',
+            marker_color=colors,
+            showlegend=False,
+            hovertemplate='Volume: %{y:,.0f}<br>%{x}<extra></extra>'
+        ), row=row_map["volume"], col=1)
 
         if show_volume_sma:
-            fig.add_trace(go.Scatter(x=chart_data.index, y=chart_data['Volume_SMA'], name='Vol SMA', line=dict(color='orange', width=1)),
-                          row=row_map["volume"], col=1)
+            fig.add_trace(go.Scatter(
+                x=chart_data.index,
+                y=chart_data['Volume_SMA'],
+                name='Vol SMA (20)',
+                line=dict(color='orange', width=1.5),
+                hovertemplate='Vol SMA: %{y:,.0f}<extra></extra>'
+            ), row=row_map["volume"], col=1)
 
     # Add Oscillators
     if "RSI" in oscillators_to_show:
@@ -1026,7 +1520,7 @@ def render_advanced_chart(ticker, price_data):
         fig.update_yaxes(title_text="Volume", row=row_map["volume"], col=1)
 
     # Display chart
-    st.plotly_chart(fig, use_container_width=True, key="advanced_chart")
+    plotly_full_width(fig, key="advanced_chart")
 
     # ===== PATTERN DETECTION SECTION (AFTER CHART) =====
     # Only show if pattern detection is enabled
@@ -1094,6 +1588,119 @@ def render_advanced_chart(ticker, price_data):
             pattern_sentiment = "🟢 Bullish" if pattern_score > 20 else "🔴 Bearish" if pattern_score < -20 else "⚪ Neutral"
             st.metric("Pattern Score", f"{pattern_score:+.0f}", pattern_sentiment)
 
+        # ===== PATTERN VISUALIZATION CHART =====
+        if total_patterns > 0:
+            st.markdown("---")
+            st.markdown("### 📊 Pattern Detection Timeline")
+            st.caption("Visual representation of detected patterns on the price chart with key levels marked")
+
+            # Create a price chart with pattern annotations
+            pattern_fig = go.Figure()
+
+            # Add candlestick chart as base
+            pattern_fig.add_trace(go.Candlestick(
+                x=chart_data.index,
+                open=chart_data['Open'],
+                high=chart_data['High'],
+                low=chart_data['Low'],
+                close=chart_data['Close'],
+                name='Price',
+                showlegend=False
+            ))
+
+            # Collect all pattern occurrences for markers
+            pattern_markers = []
+            pattern_annotations = []
+
+            # Color mapping for pattern types
+            pattern_colors = {
+                'bullish': '#00CC96',  # Green
+                'bearish': '#EF553B',  # Red
+                'neutral': '#636EFA'   # Blue
+            }
+
+            # Pattern symbols for markers
+            pattern_symbols = {
+                'bullish': 'triangle-up',
+                'bearish': 'triangle-down',
+                'neutral': 'diamond'
+            }
+
+            # Process all patterns and add markers
+            for pattern_key, pattern_list in chart_patterns.items():
+                if len(pattern_list) > 0:
+                    pattern_display_name = pattern_names.get(pattern_key, pattern_key.replace('_', ' ').title())
+
+                    # Determine pattern type
+                    if pattern_key in bullish_patterns:
+                        pattern_type = 'bullish'
+                        pattern_emoji = '🟢'
+                    elif pattern_key in bearish_patterns:
+                        pattern_type = 'bearish'
+                        pattern_emoji = '🔴'
+                    else:
+                        pattern_type = 'neutral'
+                        pattern_emoji = '⚪'
+
+                    # Add each occurrence
+                    for occurrence in pattern_list:
+                        pattern_markers.append({
+                            'date': pd.to_datetime(occurrence['date']),
+                            'price': occurrence['price'],
+                            'name': pattern_display_name,
+                            'type': pattern_type,
+                            'confidence': occurrence['confidence'],
+                            'emoji': pattern_emoji
+                        })
+
+            # Sort markers by date
+            pattern_markers.sort(key=lambda x: x['date'])
+
+            # Add markers to chart grouped by type
+            for ptype in ['bullish', 'bearish', 'neutral']:
+                type_markers = [m for m in pattern_markers if m['type'] == ptype]
+                if type_markers:
+                    pattern_fig.add_trace(go.Scatter(
+                        x=[m['date'] for m in type_markers],
+                        y=[m['price'] for m in type_markers],
+                        mode='markers',
+                        name=f"{ptype.title()} Patterns",
+                        marker=dict(
+                            size=15,
+                            color=pattern_colors[ptype],
+                            symbol=pattern_symbols[ptype],
+                            line=dict(width=2, color='white')
+                        ),
+                        text=[f"{m['emoji']} {m['name']}<br>Price: ${m['price']:.2f}<br>Confidence: {m['confidence']}"
+                              for m in type_markers],
+                        hovertemplate='%{text}<extra></extra>',
+                        showlegend=True
+                    ))
+
+            # Update layout for professional appearance
+            pattern_fig.update_layout(
+                title=f"{ticker} Price Chart with Detected Patterns",
+                xaxis_title="Date",
+                yaxis_title="Price ($)",
+                template="plotly_white",
+                height=600,
+                hovermode='closest',
+                showlegend=True,
+                legend=dict(
+                    orientation="h",
+                    yanchor="top",
+                    y=-0.1,
+                    xanchor="center",
+                    x=0.5
+                ),
+                xaxis_rangeslider_visible=False
+            )
+
+            # Display the pattern visualization chart
+            plotly_full_width(pattern_fig, key="pattern_detection_chart")
+
+            st.markdown("---")
+
         # Detailed pattern breakdown
         if total_patterns > 0:
             with st.expander("📋 **DETAILED PATTERN BREAKDOWN** - Click to view all detected patterns", expanded=False):
@@ -1126,13 +1733,13 @@ def render_advanced_chart(ticker, price_data):
                                 pattern_df['price'] = pattern_df['price'].apply(lambda x: f"${x:.2f}")
 
                                 # Display as table
-                                st.dataframe(
+                                from app_utils import display_dataframe_full_width
+                                display_dataframe_full_width(
                                     pattern_df.rename(columns={
                                         'date': 'Date Detected',
                                         'price': 'Price Level',
                                         'confidence': 'Confidence'
                                     }),
-                                    use_container_width=True,
                                     hide_index=True
                                 )
 
@@ -1158,57 +1765,3 @@ def render_advanced_chart(ticker, price_data):
                 """)
         else:
             st.info("ℹ️ No significant chart patterns detected in the selected time period. Try selecting a longer time range (6M, 1Y, or 5Y) for better pattern detection.")
-
-    st.markdown("---")
-
-    # Technical summary
-    st.markdown("### 📊 Technical Summary")
-    sum_col1, sum_col2, sum_col3, sum_col4 = st.columns(4)
-
-    latest = chart_data.iloc[-1]
-
-    with sum_col1:
-        st.metric("Close", f"${latest['Close']:.2f}")
-        if 'SMA50' in chart_data.columns:
-            sma50_val = latest['SMA50']
-            st.metric("SMA50", f"${sma50_val:.2f}",
-                     f"{((latest['Close'] / sma50_val - 1) * 100):.2f}%" if sma50_val > 0 else "N/A")
-
-    with sum_col2:
-        if 'RSI' in chart_data.columns:
-            rsi_val = latest['RSI']
-            rsi_signal = "🔴 Overbought" if rsi_val > 70 else "🟢 Oversold" if rsi_val < 30 else "⚪ Neutral"
-            st.metric("RSI", f"{rsi_val:.1f}", rsi_signal)
-
-    with sum_col3:
-        if 'MACD' in chart_data.columns:
-            macd_val = latest['MACD']
-            signal_val = latest['MACD_Signal']
-
-            # Check for recent crossovers and divergences
-            recent_data = chart_data.tail(5)  # Last 5 periods
-            has_bullish_cross = recent_data['MACD_Bullish_Cross'].any()
-            has_bearish_cross = recent_data['MACD_Bearish_Cross'].any()
-            has_bullish_div = recent_data['MACD_Bullish_Div'].any()
-            has_bearish_div = recent_data['MACD_Bearish_Div'].any()
-
-            if has_bullish_div:
-                macd_signal = "⭐ Bullish Divergence"
-            elif has_bearish_div:
-                macd_signal = "⭐ Bearish Divergence"
-            elif has_bullish_cross:
-                macd_signal = "🟢 Bullish Cross"
-            elif has_bearish_cross:
-                macd_signal = "🔴 Bearish Cross"
-            elif macd_val > signal_val:
-                macd_signal = "🟢 Bullish"
-            else:
-                macd_signal = "🔴 Bearish"
-
-            st.metric("MACD", f"{macd_val:.2f}", macd_signal)
-
-    with sum_col4:
-        if 'ADX' in chart_data.columns:
-            adx_val = latest['ADX']
-            adx_signal = "💪 Strong Trend" if adx_val > 25 else "📊 Weak Trend"
-            st.metric("ADX", f"{adx_val:.1f}", adx_signal)

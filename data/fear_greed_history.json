@@ -1,0 +1,28 @@
+[
+  {
+    "timestamp": "2025-11-23T20:22:38.005695",
+    "score": 46,
+    "category": "Neutral",
+    "level": 1,
+    "components": {
+      "vix": 50,
+      "put_call_ratio": 50,
+      "market_breadth": 25,
+      "distance_52w_high": 75,
+      "safe_haven_demand": 25
+    }
+  },
+  {
+    "timestamp": "2025-11-24T07:53:41.858470",
+    "score": 46,
+    "category": "Neutral",
+    "level": 1,
+    "components": {
+      "vix": 50,
+      "put_call_ratio": 50,
+      "market_breadth": 25,
+      "distance_52w_high": 75,
+      "safe_haven_demand": 25
+    }
+  }
+]

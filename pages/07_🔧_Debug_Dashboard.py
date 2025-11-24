@@ -15,11 +15,17 @@ from error_logger import (
     init_error_log, get_error_count, get_recent_errors,
     clear_error_log, display_error_summary
 )
+from performance_optimizer import get_cache_reload_estimate
+from app_utils import display_dataframe_full_width
+from mode_config import render_mode_info, get_cache_ttl, get_current_mode
 
 # Page config
 st.set_page_config(page_title="Debug Dashboard", page_icon="🔧", layout="wide")
 st.title("🔧 Debug Dashboard")
-st.markdown("System diagnostics, API health checks, and performance monitoring")
+st.caption("System diagnostics, API health checks, performance monitoring, and mode configuration details")
+
+# Display current trading mode
+render_mode_info()
 
 # Create tabs for different debug sections
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
@@ -70,7 +76,7 @@ with tab1:
                 df_key = df_packages[df_packages['name'].isin(key_packages)]
 
                 if not df_key.empty:
-                    st.dataframe(df_key, use_container_width=True, hide_index=True)
+                    display_dataframe_full_width(df_key, hide_index=True)
                 else:
                     st.warning("No key packages found")
             else:
@@ -238,11 +244,44 @@ with tab3:
     with col1:
         st.subheader("Cache Controls")
 
-        if st.button("🗑️ Clear All Caches", type="primary"):
-            st.cache_data.clear()
-            st.cache_resource.clear()
-            st.success("All caches cleared successfully!")
-            st.rerun()
+        # Get reload time estimate
+        reload_estimate = get_cache_reload_estimate()
+
+        # Show time estimate if it's significant
+        if reload_estimate['show_warning']:
+            st.caption(f"⏱️ Est. reload time: ~{reload_estimate['estimated_min']}-{reload_estimate['estimated_max']}s based on recent usage")
+
+        # Initialize confirmation state
+        if 'confirm_clear_all' not in st.session_state:
+            st.session_state.confirm_clear_all = False
+
+        # Clear All Caches button with confirmation
+        if not st.session_state.confirm_clear_all:
+            if st.button("🗑️ Clear All Caches", type="primary"):
+                if reload_estimate['show_warning']:
+                    st.session_state.confirm_clear_all = True
+                    st.rerun()
+                else:
+                    # No warning needed, clear immediately
+                    st.cache_data.clear()
+                    st.cache_resource.clear()
+                    st.success("All caches cleared successfully!")
+                    st.rerun()
+        else:
+            # Show confirmation dialog
+            st.warning(f"⚠️ This will clear all cached data and reload on next interaction. Estimated reload time: **{reload_estimate['estimated_min']}-{reload_estimate['estimated_max']} seconds**. Continue?")
+            col_confirm1, col_confirm2 = st.columns(2)
+            with col_confirm1:
+                if st.button("✅ Yes, Clear Cache", type="primary"):
+                    st.session_state.confirm_clear_all = False
+                    st.cache_data.clear()
+                    st.cache_resource.clear()
+                    st.success("All caches cleared successfully!")
+                    st.rerun()
+            with col_confirm2:
+                if st.button("❌ Cancel"):
+                    st.session_state.confirm_clear_all = False
+                    st.rerun()
 
         if st.button("🔄 Clear Data Cache Only"):
             st.cache_data.clear()
@@ -562,7 +601,7 @@ with tab5:
                 })
 
             df_results = pd.DataFrame(results)
-            st.dataframe(df_results, use_container_width=True, hide_index=True)
+            display_dataframe_full_width(df_results, hide_index=True)
 
     st.subheader("Memory Usage Tracking")
 

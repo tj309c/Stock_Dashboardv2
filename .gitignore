@@ -21,3 +21,6 @@ dist/
 
 # Streamlit secrets (local API keys) - keep out of version control
 .streamlit/secrets.toml
+
+# Ignore stray runtime/log files
+nul

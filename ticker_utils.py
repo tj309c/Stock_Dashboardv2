@@ -3,6 +3,7 @@ Ticker Input Utilities - Reusable ticker input components with quick-pick functi
 """
 import streamlit as st
 from typing import List
+from app_utils import full_width_button
 
 
 def render_ticker_input_with_quick_picks(
@@ -74,10 +75,9 @@ def render_ticker_input_with_quick_picks(
 
         for idx, quick_ticker in enumerate(quick_picks):
             with quick_cols[idx]:
-                if st.button(
+                if full_width_button(
                     quick_ticker,
                     key=f"{session_key}_quick_{quick_ticker}",
-                    use_container_width=True,
                     type="secondary"
                 ):
                     st.session_state[session_key] = quick_ticker
