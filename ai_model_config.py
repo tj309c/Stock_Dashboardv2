@@ -30,9 +30,9 @@ except Exception:  # pragma: no cover - environment-dependent
 class AIProvider(Enum):
     """Supported AI providers"""
     GEMINI = "Google Gemini"
-    OPENAI = "OpenAI"
-    CLAUDE = "Anthropic Claude"
-    GROK = "X.AI Grok"
+    # OPENAI = "OpenAI"  # Disabled - enable when API key is valid
+    # CLAUDE = "Anthropic Claude"  # Disabled - enable when API key is valid
+    # GROK = "X.AI Grok"  # Disabled - enable when API key is valid
 
 
 @dataclass
@@ -122,7 +122,10 @@ GEMINI_MODELS = [
     ),
 ]
 
-OPENAI_MODELS = [
+# Disabled - OpenAI models
+OPENAI_MODELS = []
+"""
+OPENAI_MODELS_DISABLED = [
     AIModelInfo(
         provider=AIProvider.OPENAI,
         model_id="gpt-4o",
@@ -188,8 +191,12 @@ OPENAI_MODELS = [
         cost_per_1k_output=1.25
     ),
 ]
+"""
 
-CLAUDE_MODELS = [
+# Disabled - Claude models
+CLAUDE_MODELS = []
+"""
+CLAUDE_MODELS_DISABLED = [
     AIModelInfo(
         provider=AIProvider.CLAUDE,
         model_id="claude-sonnet-4-5-20250929",
@@ -282,9 +289,13 @@ GROK_MODELS = [
         cost_per_1k_output=12.00
     ),
 ]
+"""
 
-# Combine all models
-ALL_MODELS = GEMINI_MODELS + OPENAI_MODELS + CLAUDE_MODELS + GROK_MODELS
+# Disabled - Grok models
+GROK_MODELS = []
+
+# Combine all models - Only Gemini enabled
+ALL_MODELS = GEMINI_MODELS  # + OPENAI_MODELS + CLAUDE_MODELS + GROK_MODELS
 
 # Default model
 DEFAULT_MODEL = "gemini-2.5-flash"
@@ -315,14 +326,15 @@ def get_model_info(model_id: str) -> Optional[AIModelInfo]:
 def is_provider_configured(provider: AIProvider) -> bool:
     """Check if API key is configured for a provider"""
     key_mapping = {
-        AIProvider.GEMINI: 'GOOGLE_API_KEY',
-        AIProvider.OPENAI: 'OPENAI_API_KEY',
-        AIProvider.CLAUDE: 'ANTHROPIC_API_KEY',
-        AIProvider.GROK: 'XAI_API_KEY'
+        AIProvider.GEMINI: ['GOOGLE_API_KEY', 'GEMINI_API_KEY'],  # Support both key names
+        # AIProvider.OPENAI: ['OPENAI_API_KEY'],  # Disabled
+        # AIProvider.CLAUDE: ['ANTHROPIC_API_KEY'],  # Disabled
+        # AIProvider.GROK: ['XAI_API_KEY']  # Disabled
     }
 
-    api_key = key_mapping.get(provider)
-    return api_key in st.secrets if api_key else False
+    possible_keys = key_mapping.get(provider, [])
+    # Return True if ANY of the possible keys exist
+    return any(key in st.secrets for key in possible_keys)
 
 
 def get_available_providers() -> List[AIProvider]:
@@ -511,37 +523,44 @@ def create_model_client(model_id: Optional[str] = None, session_key: str = "sele
         # importable at module import time genai will be None.
         if genai is None:
             raise ValueError("google.generativeai SDK is not available")
-        if 'GOOGLE_API_KEY' not in st.secrets:
-            raise ValueError("GOOGLE_API_KEY not configured")
-        genai.configure(api_key=st.secrets['GOOGLE_API_KEY'])
+        # Support both GOOGLE_API_KEY and GEMINI_API_KEY
+        api_key = None
+        if 'GEMINI_API_KEY' in st.secrets:
+            api_key = st.secrets['GEMINI_API_KEY']
+        elif 'GOOGLE_API_KEY' in st.secrets:
+            api_key = st.secrets['GOOGLE_API_KEY']
+
+        if not api_key:
+            raise ValueError("GOOGLE_API_KEY or GEMINI_API_KEY not configured")
+        genai.configure(api_key=api_key)
         return genai.GenerativeModel(model_id)
 
-    elif model_info.provider == AIProvider.OPENAI:
-        # Use the module-level OpenAI class (patched in tests) if available.
-        if OpenAI is None:
-            raise ValueError("openai SDK is not available")
-        if 'OPENAI_API_KEY' not in st.secrets:
-            raise ValueError("OPENAI_API_KEY not configured")
-        return OpenAI(api_key=st.secrets['OPENAI_API_KEY'])
-
-    elif model_info.provider == AIProvider.CLAUDE:
-        # Use module-level anthropic (patched in tests) if available.
-        if anthropic is None:
-            raise ValueError("anthropic SDK is not available")
-        if 'ANTHROPIC_API_KEY' not in st.secrets:
-            raise ValueError("ANTHROPIC_API_KEY not configured")
-        return anthropic.Anthropic(api_key=st.secrets['ANTHROPIC_API_KEY'])
-
-    elif model_info.provider == AIProvider.GROK:
-        # Grok is OpenAI-compatible; use module-level OpenAI class if available
-        if OpenAI is None:
-            raise ValueError("openai SDK is not available for GROK")
-        if 'XAI_API_KEY' not in st.secrets:
-            raise ValueError("XAI_API_KEY not configured")
-        return OpenAI(api_key=st.secrets['XAI_API_KEY'], base_url="https://api.x.ai/v1")
+    # elif model_info.provider == AIProvider.OPENAI:
+    #     # Use the module-level OpenAI class (patched in tests) if available.
+    #     if OpenAI is None:
+    #         raise ValueError("openai SDK is not available")
+    #     if 'OPENAI_API_KEY' not in st.secrets:
+    #         raise ValueError("OPENAI_API_KEY not configured")
+    #     return OpenAI(api_key=st.secrets['OPENAI_API_KEY'])
+    #
+    # elif model_info.provider == AIProvider.CLAUDE:
+    #     # Use module-level anthropic (patched in tests) if available.
+    #     if anthropic is None:
+    #         raise ValueError("anthropic SDK is not available")
+    #     if 'ANTHROPIC_API_KEY' not in st.secrets:
+    #         raise ValueError("ANTHROPIC_API_KEY not configured")
+    #     return anthropic.Anthropic(api_key=st.secrets['ANTHROPIC_API_KEY'])
+    #
+    # elif model_info.provider == AIProvider.GROK:
+    #     # Grok is OpenAI-compatible; use module-level OpenAI class if available
+    #     if OpenAI is None:
+    #         raise ValueError("openai SDK is not available for GROK")
+    #     if 'XAI_API_KEY' not in st.secrets:
+    #         raise ValueError("XAI_API_KEY not configured")
+    #     return OpenAI(api_key=st.secrets['XAI_API_KEY'], base_url="https://api.x.ai/v1")
 
     else:
-        raise ValueError(f"Unsupported provider: {model_info.provider}")
+        raise ValueError(f"Unsupported provider: {model_info.provider}. Only Gemini is currently enabled.")
 
 
 def get_provider_status() -> Dict[str, bool]:
@@ -565,3 +584,89 @@ def display_provider_status():
 
         if not any(status.values()):
             st.warning("No AI providers configured. Add API keys to `.streamlit/secrets.toml`")
+
+
+# ==========================================
+# HELPER FUNCTIONS FOR COMMON USE CASES
+# ==========================================
+
+def get_configured_model(session_key: str = "global_ai_model") -> Optional[AIModelInfo]:
+    """
+    Get the currently configured AI model info
+
+    Args:
+        session_key: Session state key for model selection (default: global_ai_model)
+
+    Returns:
+        AIModelInfo if model is selected and configured, None otherwise
+    """
+    model_id = get_selected_model(session_key)
+    if not model_id:
+        return None
+
+    model_info = get_model_info(model_id)
+    if not model_info:
+        return None
+
+    # Check if provider is configured
+    if not is_provider_configured(model_info.provider):
+        return None
+
+    return model_info
+
+
+def call_ai_model(
+    model_info: AIModelInfo,
+    prompt: str,
+    max_tokens: int = 500,
+    temperature: float = 0.7,
+    session_key: str = "global_ai_model"
+) -> str:
+    """
+    Universal function to call any AI model with a prompt
+
+    Args:
+        model_info: AIModelInfo object
+        prompt: The prompt to send to the model
+        max_tokens: Maximum tokens in response
+        temperature: Temperature for response randomness (0.0-1.0)
+        session_key: Session state key (default: global_ai_model)
+
+    Returns:
+        AI model response as string
+
+    Raises:
+        Exception: If AI call fails
+    """
+    try:
+        client = create_model_client(model_info.model_id, session_key)
+
+        if model_info.provider == AIProvider.GEMINI:
+            response = client.generate_content(prompt)
+            return response.text
+
+        # elif model_info.provider == AIProvider.OPENAI or model_info.provider == AIProvider.GROK:
+        #     response = client.chat.completions.create(
+        #         model=model_info.model_id,
+        #         messages=[{"role": "user", "content": prompt}],
+        #         max_tokens=max_tokens,
+        #         temperature=temperature
+        #     )
+        #     return response.choices[0].message.content
+        #
+        # elif model_info.provider == AIProvider.CLAUDE:
+        #     response = client.messages.create(
+        #         model=model_info.model_id,
+        #         max_tokens=max_tokens,
+        #         temperature=temperature,
+        #         messages=[{"role": "user", "content": prompt}]
+        #     )
+        #     return response.content[0].text
+
+        else:
+            raise ValueError(f"Unsupported provider: {model_info.provider}. Only Gemini is currently enabled.")
+
+    except Exception as e:
+        # Return a friendly failure string instead of raising so callers (and UI)
+        # can show useful messages without causing noisy stack traces in the app
+        return f"failed: {str(e)}"
